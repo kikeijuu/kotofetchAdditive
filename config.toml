@@ -1,9 +1,0 @@
-[display]
-padding = 3
-width = 50
-show_translation = true
-translation_color = "#888888"
-font_size = "medium"
-border = true
-mode = "haiku"
-seed = 123
