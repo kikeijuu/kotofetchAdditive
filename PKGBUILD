@@ -7,16 +7,16 @@ url="https://github.com/hxpe-dev/kotofetch"
 license=('MIT')
 depends=('glibc')
 makedepends=('rust' 'cargo')
-source=("https://github.com/hxpe-dev/kotofetch/archive/refs/tags/v$pkgver.tar.gz")
+source=("$pkgname-$pkgver")
 sha256sums=('SKIP') # replace with real checksum or 'SKIP'
 
 build() {
-    cd "$srcdir/kotofetch-$pkgver"
+    cd "$srcdir/$pkgname-$pkgver"
     cargo build --release --locked
 }
 
 package() {
-    cd "$srcdir/kotofetch-$pkgver"
+    cd "$srcdir/$pkgname-$pkgver"
     install -Dm755 "target/release/kotofetch" "$pkgdir/usr/bin/kotofetch"
     install -Dm644 README.md "$pkgdir/usr/share/doc/$pkgname/README.md"
     install -Dm644 quotes/* "$pkgdir/usr/share/kotofetch/quotes/"
