@@ -9,7 +9,7 @@ depends=('glibc')
 makedepends=('rust' 'cargo')
 
 build() {
-    cargo build --release --locked
+    cargo build --release
 }
 
 package() {
