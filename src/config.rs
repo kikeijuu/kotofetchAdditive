@@ -1,0 +1,195 @@
+use crate::quotes::QuotesCollection;
+use dirs::config_dir;
+use serde::Deserialize;
+use std::fs;
+use std::path::PathBuf;
+
+#[derive(Deserialize, Debug, Clone)]
+pub struct FileConfig {
+    pub display: Option<DisplayConfig>,
+    pub quotes: Option<QuotesCollection>,
+}
+
+#[derive(Deserialize, Debug, Clone)]
+pub struct DisplayConfig {
+    pub horizontal_padding: Option<usize>,
+    pub vertical_padding: Option<usize>,
+    pub width: Option<usize>,
+    pub show_translation: Option<bool>,
+    pub translation_color: Option<String>,
+    // pub translation_style: Option<String>,
+    pub font_size: Option<String>,
+    pub bold: Option<bool>,
+    pub border: Option<bool>,
+    pub source: Option<bool>,
+    pub mode: Option<String>,
+    pub seed: Option<u64>,
+}
+
+#[derive(Clone, Debug)]
+pub struct RuntimeConfig {
+    pub horizontal_padding: usize,
+    pub vertical_padding: usize,
+    pub width: usize,
+    pub show_translation: bool,
+    pub translation_color: String,
+    pub font_size: String,
+    pub bold: bool,
+    pub border: bool,
+    pub source: bool,
+    pub mode: String,
+    pub seed: u64,
+    pub quotes: QuotesCollection,
+}
+
+impl Default for RuntimeConfig {
+    fn default() -> Self {
+        Self {
+            horizontal_padding: 3,
+            vertical_padding: 1,
+            width: 0,
+            show_translation: true,
+            translation_color: "#888888".to_string(),
+            font_size: "medium".to_string(),
+            bold: true,
+            border: true,
+            source: true,
+            mode: "proverb".to_string(),
+            seed: 0,
+            quotes: QuotesCollection::default_with_builtins(),
+        }
+    }
+}
+
+pub fn load_user_config(path_override: Option<PathBuf>) -> Option<FileConfig> {
+    let path = if let Some(p) = path_override {
+        p
+    } else {
+        if let Some(mut d) = config_dir() {
+            d.push("kotofetch");
+            d.push("config.toml");
+            d
+        } else {
+            return None;
+        }
+    };
+
+    if path.exists() {
+        match fs::read_to_string(&path) {
+            Ok(s) => match toml::from_str::<FileConfig>(&s) {
+                Ok(parsed) => Some(parsed),
+                Err(e) => {
+                    eprintln!("Failed to parse config.toml: {}", e);
+                    None
+                }
+            },
+            Err(e) => {
+                eprintln!("Failed to read config: {}", e);
+                None
+            }
+        }
+    } else {
+        None
+    }
+}
+
+pub fn make_runtime_config(
+    user: Option<FileConfig>,
+    builtins: QuotesCollection,
+    cli: &crate::cli::Cli,
+) -> RuntimeConfig {
+    let mut r = RuntimeConfig::default();
+
+    // base builtins
+    r.quotes = builtins;
+
+    // apply user file config
+    if let Some(uf) = user {
+        if let Some(d) = uf.display {
+            if let Some(p) = d.horizontal_padding {
+                r.horizontal_padding = p;
+            }
+            if let Some(p) = d.vertical_padding {
+                r.vertical_padding = p;
+            }
+            if let Some(w) = d.width {
+                r.width = w;
+            }
+            if let Some(st) = d.show_translation {
+                r.show_translation = st;
+            }
+            if let Some(tc) = d.translation_color {
+                r.translation_color = tc;
+            }
+            if let Some(fs) = d.font_size {
+                r.font_size = fs;
+            }
+            if let Some(b) = d.bold {
+                r.bold = b;
+            }
+            if let Some(b) = d.border {
+                r.border = b;
+            }
+            if let Some(b) = d.source {
+                r.source = b;
+            }
+            if let Some(m) = d.mode {
+                r.mode = m;
+            }
+            if let Some(s) = d.seed {
+                r.seed = s;
+            }
+        }
+        if let Some(qs) = uf.quotes {
+            // Merge: if user provided quote lists, replace builtins for those categories
+            if qs.proverb.is_some() {
+                r.quotes.proverb = qs.proverb;
+            }
+            if qs.haiku.is_some() {
+                r.quotes.haiku = qs.haiku;
+            }
+            if qs.anime.is_some() {
+                r.quotes.anime = qs.anime;
+            }
+        }
+    }
+
+    // apply CLI overrides
+    if let Some(p) = cli.horizontal_padding {
+        r.horizontal_padding = p;
+    }
+    if let Some(p) = cli.vertical_padding {
+        r.vertical_padding = p;
+    }
+    if let Some(w) = cli.width {
+        r.width = w;
+    }
+    if let Some(st) = cli.show_translation {
+        r.show_translation = st;
+    }
+    if let Some(tc) = cli.translation_color.clone() {
+        r.translation_color = tc;
+    }
+    if let Some(b) = cli.bold {
+        r.bold = b;
+    }
+    if let Some(b) = cli.border {
+        r.border = b;
+    }
+    if let Some(b) = cli.source {
+        r.source = b;
+    }
+    if let Some(m) = &cli.mode {
+        r.mode = match m {
+            crate::cli::Mode::Proverb => "proverb".to_string(),
+            crate::cli::Mode::Haiku => "haiku".to_string(),
+            crate::cli::Mode::Anime => "anime".to_string(),
+            crate::cli::Mode::Random => "random".to_string(),
+        }
+    }
+    if let Some(s) = cli.seed {
+        r.seed = s;
+    }
+
+    r
+}
