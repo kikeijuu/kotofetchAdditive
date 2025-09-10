@@ -7,7 +7,6 @@ url="https://github.com/hxpe-dev/kotofetch"
 license=('MIT')
 depends=('glibc')
 makedepends=('rust' 'cargo')
-sha256sums=('SKIP') # replace with real checksum or 'SKIP'
 
 build() {
     cargo build --release --locked
