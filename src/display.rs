@@ -8,8 +8,20 @@ use unicode_width::UnicodeWidthStr;
 fn simulate_font_size(s: &str, size: &str) -> String {
     match size {
         "small" => s.to_string(),
-        "medium" => s.chars().map(|c| c.to_string()).collect::<Vec<_>>().join(" "),
-        "large"  => s.chars().map(|c| c.to_string()).collect::<Vec<_>>().join(" "),
+        "medium" => s
+            .chars()
+            .map(|c| if c == '\n' { "\n".to_string() } else { format!("{} ", c) })
+            .collect::<Vec<_>>()
+            .join("")
+            .trim_end()
+            .to_string(),
+        "large" => s
+            .chars()
+            .map(|c| if c == '\n' { "\n".to_string() } else { format!("{}  ", c) })
+            .collect::<Vec<_>>()
+            .join("")
+            .trim_end()
+            .to_string(),
         _ => s.to_string(),
     }
 }
