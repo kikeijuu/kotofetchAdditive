@@ -2,6 +2,8 @@
 
 ## For each new update
 
+Don't forget to update the [Cargo.toml](Cargo.toml) file version.
+
 In the github repo folder
 ```bash
 git add .
