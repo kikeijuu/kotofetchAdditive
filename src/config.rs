@@ -17,7 +17,6 @@ pub struct DisplayConfig {
     pub width: Option<usize>,
     pub show_translation: Option<bool>,
     pub translation_color: Option<String>,
-    // pub translation_style: Option<String>,
     pub font_size: Option<String>,
     pub bold: Option<bool>,
     pub border: Option<bool>,
@@ -64,14 +63,11 @@ impl Default for RuntimeConfig {
 pub fn load_user_config(path_override: Option<PathBuf>) -> Option<FileConfig> {
     let path = if let Some(p) = path_override {
         p
+    } else if let Some(mut d) = config_dir() {
+        d.push("kotofetch/config.toml");
+        d
     } else {
-        if let Some(mut d) = config_dir() {
-            d.push("kotofetch");
-            d.push("config.toml");
-            d
-        } else {
-            return None;
-        }
+        return None;
     };
 
     if path.exists() {
@@ -106,79 +102,35 @@ pub fn make_runtime_config(
     // apply user file config
     if let Some(uf) = user {
         if let Some(d) = uf.display {
-            if let Some(p) = d.horizontal_padding {
-                r.horizontal_padding = p;
-            }
-            if let Some(p) = d.vertical_padding {
-                r.vertical_padding = p;
-            }
-            if let Some(w) = d.width {
-                r.width = w;
-            }
-            if let Some(st) = d.show_translation {
-                r.show_translation = st;
-            }
-            if let Some(tc) = d.translation_color {
-                r.translation_color = tc;
-            }
-            if let Some(fs) = d.font_size {
-                r.font_size = fs;
-            }
-            if let Some(b) = d.bold {
-                r.bold = b;
-            }
-            if let Some(b) = d.border {
-                r.border = b;
-            }
-            if let Some(b) = d.source {
-                r.source = b;
-            }
-            if let Some(m) = d.mode {
-                r.mode = m;
-            }
-            if let Some(s) = d.seed {
-                r.seed = s;
-            }
+            if let Some(p) = d.horizontal_padding { r.horizontal_padding = p; }
+            if let Some(p) = d.vertical_padding { r.vertical_padding = p; }
+            if let Some(w) = d.width { r.width = w; }
+            if let Some(st) = d.show_translation { r.show_translation = st; }
+            if let Some(tc) = d.translation_color { r.translation_color = tc; }
+            if let Some(fs) = d.font_size { r.font_size = fs; }
+            if let Some(b) = d.bold { r.bold = b; }
+            if let Some(b) = d.border { r.border = b; }
+            if let Some(b) = d.source { r.source = b; }
+            if let Some(m) = d.mode { r.mode = m; }
+            if let Some(s) = d.seed { r.seed = s; }
         }
+
         if let Some(qs) = uf.quotes {
-            // Merge: if user provided quote lists, replace builtins for those categories
-            if qs.proverb.is_some() {
-                r.quotes.proverb = qs.proverb;
-            }
-            if qs.haiku.is_some() {
-                r.quotes.haiku = qs.haiku;
-            }
-            if qs.anime.is_some() {
-                r.quotes.anime = qs.anime;
-            }
+            if qs.proverb.is_some() { r.quotes.proverb = qs.proverb; }
+            if qs.haiku.is_some() { r.quotes.haiku = qs.haiku; }
+            if qs.anime.is_some() { r.quotes.anime = qs.anime; }
         }
     }
 
     // apply CLI overrides
-    if let Some(p) = cli.horizontal_padding {
-        r.horizontal_padding = p;
-    }
-    if let Some(p) = cli.vertical_padding {
-        r.vertical_padding = p;
-    }
-    if let Some(w) = cli.width {
-        r.width = w;
-    }
-    if let Some(st) = cli.show_translation {
-        r.show_translation = st;
-    }
-    if let Some(tc) = cli.translation_color.clone() {
-        r.translation_color = tc;
-    }
-    if let Some(b) = cli.bold {
-        r.bold = b;
-    }
-    if let Some(b) = cli.border {
-        r.border = b;
-    }
-    if let Some(b) = cli.source {
-        r.source = b;
-    }
+    if let Some(p) = cli.horizontal_padding { r.horizontal_padding = p; }
+    if let Some(p) = cli.vertical_padding { r.vertical_padding = p; }
+    if let Some(w) = cli.width { r.width = w; }
+    if let Some(st) = cli.show_translation { r.show_translation = st; }
+    if let Some(tc) = &cli.translation_color { r.translation_color = tc.clone(); }
+    if let Some(b) = cli.bold { r.bold = b; }
+    if let Some(b) = cli.border { r.border = b; }
+    if let Some(b) = cli.source { r.source = b; }
     if let Some(m) = &cli.mode {
         r.mode = match m {
             crate::cli::Mode::Proverb => "proverb".to_string(),
@@ -187,9 +139,7 @@ pub fn make_runtime_config(
             crate::cli::Mode::Random => "random".to_string(),
         }
     }
-    if let Some(s) = cli.seed {
-        r.seed = s;
-    }
+    if let Some(s) = cli.seed { r.seed = s; }
 
     r
 }

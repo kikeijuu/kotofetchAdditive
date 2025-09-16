@@ -1,20 +1,19 @@
 use clap::{ArgAction, Parser, ValueEnum};
 use std::path::PathBuf;
 
+/// kotofetch — show beautiful Japanese quotes in terminal
 #[derive(Parser, Debug)]
-#[command(
-    author,
-    version,
-    about = "kotofetch — show beautiful Japanese quotes in terminal"
-)]
+#[command(author, version, about)]
 pub struct Cli {
     /// Path to config file (TOML). Defaults to ~/.config/kotofetch/config.toml
     #[arg(short, long)]
     pub config: Option<PathBuf>,
 
-    /// Override padding
+    /// Override horizontal padding
     #[arg(long)]
     pub horizontal_padding: Option<usize>,
+
+    /// Override vertical padding
     #[arg(long)]
     pub vertical_padding: Option<usize>,
 
@@ -30,15 +29,15 @@ pub struct Cli {
     #[arg(long)]
     pub translation_color: Option<String>,
 
-    /// Jap text bold
+    /// Make Japanese text bold
     #[arg(long)]
     pub bold: Option<bool>,
 
-    /// Border around quote
+    /// Draw a border around the quote
     #[arg(long)]
     pub border: Option<bool>,
 
-    /// Show source
+    /// Show quote source
     #[arg(long)]
     pub source: Option<bool>,
 

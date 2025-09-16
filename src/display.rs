@@ -167,15 +167,23 @@ fn print_boxed(
         if let Some(s) = source {
             // spacing line before source
             if border {
-                println!("│{}{}{}│", " ".repeat(horizontal_padding), " ".repeat(inner_width), " ".repeat(horizontal_padding));
+                println!(
+                    "│{}{}{}│",
+                    " ".repeat(horizontal_padding),
+                    " ".repeat(inner_width),
+                    " ".repeat(horizontal_padding)
+                );
             } else {
                 println!("{}", " ".repeat(horizontal_padding + inner_width));
             }
 
-            let wrapped = wrap(s, inner_width);
-            for wline in wrapped.iter() {
-                // Build the string correctly
-                let line_str = format!("— {}", wline); // String
+            let wrapped = wrap(s, inner_width.saturating_sub(2)); // subtract dash and space
+            for (i, wline) in wrapped.iter().enumerate() {
+                let line_str = if i == 0 {
+                    format!("— {}", wline)
+                } else {
+                    format!("  {}", wline) // align subsequent lines
+                };
                 let extra = inner_width.saturating_sub(UnicodeWidthStr::width(line_str.as_str()));
                 let mut content = line_str.clone();
                 content.push_str(&" ".repeat(extra));
@@ -188,7 +196,11 @@ fn print_boxed(
                         " ".repeat(horizontal_padding)
                     );
                 } else {
-                    println!("{}{}", " ".repeat(horizontal_padding), source_color_style.apply_to(content));
+                    println!(
+                        "{}{}",
+                        " ".repeat(horizontal_padding),
+                        source_color_style.apply_to(content)
+                    );
                 }
             }
         }
