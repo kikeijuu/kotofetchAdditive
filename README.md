@@ -82,7 +82,6 @@ Place `.toml` files there with the same structure as the built-in ones (`proverb
 ## Usage
 ```bash
 kotofetch                           # display a random quote
-kotofetch --mode haiku              # choose a specific mode
 kotofetch --horizontal-padding 3    # override config temporarily
 ```
 
