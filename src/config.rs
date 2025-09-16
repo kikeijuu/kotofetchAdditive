@@ -46,15 +46,15 @@ impl Default for RuntimeConfig {
         Self {
             horizontal_padding: 3,
             vertical_padding: 1,
-            width: 0,
+            width: 0, // 0 = automatic
             show_translation: true,
             translation_color: "#888888".to_string(),
             font_size: "medium".to_string(),
             bold: true,
             border: true,
-            source: true,
-            mode: "proverb".to_string(),
-            seed: 0,
+            source: false,
+            mode: "random".to_string(),
+            seed: 0, // 0 = random
             quotes: QuotesCollection::default_with_builtins(),
         }
     }
