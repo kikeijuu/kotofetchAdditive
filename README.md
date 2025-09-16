@@ -2,6 +2,8 @@
 
 kotofetch is a small, configurable CLI tool that displays Japanese quotes in the terminal. It comes with built-in quotes and allows users to customize display options such as padding, width, translation display, and text styles.
 
+![image](./images/01.png)
+
 ## Installation
 
 ### Arch Linux / AUR
