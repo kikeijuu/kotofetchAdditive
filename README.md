@@ -45,7 +45,7 @@ User configuration lives in:
 
 Here you can customize:
 - `horizontal_padding` / `vertical_padding` - spacing around quotes
-- `width` - max width for text wrapping
+- `width` - max width for text wrapping (`0` for automatic width)
 - `show_translation` - display translations (true/false)
 - `translation_color` - ANSI color for translations
 - `font_size` - small, medium, or large
@@ -53,7 +53,7 @@ Here you can customize:
 - `border` - show a box border
 - `source` - show the quote source
 - `modes` - list of default quote modes (`["proverb", "haiku", "anime"]`)
-- `seed` - RNG seed for random quotes
+- `seed` - RNG seed for random quotes (`0` for random seed)
 
 Example `config.toml`:
 ```toml
@@ -67,7 +67,7 @@ font_size = "medium"
 bold = true
 border = true
 source = true
-mode = "proverb"
+modes = ["proverb", "anime"]
 seed = 0
 ```
 
