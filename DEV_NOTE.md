@@ -11,7 +11,11 @@ git tag -a v0.2.1 -m "Release version 0.2.1"    # Example version
 git push origin v0.2.1                          # Example version
 ```
 
-In the aur repo folder
+In the AUR repo folder
 ```bash
-
+nvim PKGBUILD # Once in here change the version to match the one in the github repo
+makepkg --printsrcinfo > .SRCINFO
+git add PKGBUILD .SRCINFO
+git commit -m "Update to 0.2.1"                 # Match version
+git push aur master
 ```
