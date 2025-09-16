@@ -41,9 +41,8 @@ pub struct Cli {
     #[arg(long)]
     pub source: Option<bool>,
 
-    /// Mode to pick quotes from
-    #[arg(long, value_enum)]
-    pub mode: Option<Mode>,
+    #[arg(long, value_delimiter = ',', num_args = 1.., required = false)]
+    pub modes: Option<Vec<Mode>>,
 
     /// Choose a specific quote by index (0-based) for reproducible output
     #[arg(long)]
@@ -54,10 +53,9 @@ pub struct Cli {
     pub seed: Option<u64>,
 }
 
-#[derive(ValueEnum, Clone, Debug)]
+#[derive(ValueEnum, Clone, Debug, PartialEq, Eq)]
 pub enum Mode {
     Proverb,
     Haiku,
     Anime,
-    Random,
 }

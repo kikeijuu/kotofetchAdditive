@@ -50,7 +50,7 @@ impl QuotesCollection {
         let mut out = QuotesCollection::default();
 
         // --- load built-ins (from repo) ---
-        let prov_toml = include_str!("../quotes/proverbs.toml");
+        let prov_toml = include_str!("../quotes/proverb.toml");
         let h_toml = include_str!("../quotes/haiku.toml");
         let a_toml = include_str!("../quotes/anime.toml");
 
@@ -62,7 +62,7 @@ impl QuotesCollection {
         if let Some(mut cfg_dir) = config_dir() {
             cfg_dir.push("kotofetch/quotes");
 
-            let prov_path = cfg_dir.join("proverbs.toml");
+            let prov_path = cfg_dir.join("proverb.toml");
             let haiku_path = cfg_dir.join("haiku.toml");
             let anime_path = cfg_dir.join("anime.toml");
 

@@ -21,7 +21,7 @@ pub struct DisplayConfig {
     pub bold: Option<bool>,
     pub border: Option<bool>,
     pub source: Option<bool>,
-    pub mode: Option<String>,
+    pub modes: Option<Vec<String>>,
     pub seed: Option<u64>,
 }
 
@@ -36,7 +36,7 @@ pub struct RuntimeConfig {
     pub bold: bool,
     pub border: bool,
     pub source: bool,
-    pub mode: String,
+    pub modes: Vec<String>,
     pub seed: u64,
     pub quotes: QuotesCollection,
 }
@@ -53,7 +53,7 @@ impl Default for RuntimeConfig {
             bold: true,
             border: true,
             source: false,
-            mode: "random".to_string(),
+            modes: vec!["proverb".to_string(), "haiku".to_string(), "anime".to_string()],
             seed: 0, // 0 = random
             quotes: QuotesCollection::default_with_builtins(),
         }
@@ -111,7 +111,7 @@ pub fn make_runtime_config(
             if let Some(b) = d.bold { r.bold = b; }
             if let Some(b) = d.border { r.border = b; }
             if let Some(b) = d.source { r.source = b; }
-            if let Some(m) = d.mode { r.mode = m; }
+            if let Some(m) = d.modes { r.modes = m; }
             if let Some(s) = d.seed { r.seed = s; }
         }
 
@@ -131,14 +131,17 @@ pub fn make_runtime_config(
     if let Some(b) = cli.bold { r.bold = b; }
     if let Some(b) = cli.border { r.border = b; }
     if let Some(b) = cli.source { r.source = b; }
-    if let Some(m) = &cli.mode {
-        r.mode = match m {
-            crate::cli::Mode::Proverb => "proverb".to_string(),
-            crate::cli::Mode::Haiku => "haiku".to_string(),
-            crate::cli::Mode::Anime => "anime".to_string(),
-            crate::cli::Mode::Random => "random".to_string(),
-        }
+
+    if let Some(cli_modes) = &cli.modes {
+        r.modes = cli_modes.iter().map(|m| {
+            match m {
+                crate::cli::Mode::Proverb => "proverb".to_string(),
+                crate::cli::Mode::Haiku => "haiku".to_string(),
+                crate::cli::Mode::Anime => "anime".to_string(),
+            }
+        }).collect();
     }
+    
     if let Some(s) = cli.seed { r.seed = s; }
 
     r

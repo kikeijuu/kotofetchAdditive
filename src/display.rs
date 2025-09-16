@@ -37,36 +37,6 @@ fn color_from_hex_like(hex: &str) -> Style {
     }
 }
 
-fn choose_quote(
-    collection: &crate::quotes::QuotesCollection,
-    mode: &str,
-    rng: &mut StdRng,
-    index: Option<usize>,
-) -> Option<Quote> {
-    let vec_opt = match mode {
-        "proverb" => &collection.proverb,
-        "haiku" => &collection.haiku,
-        "anime" => &collection.anime,
-        "random" => &None,
-        _ => &collection.proverb,
-    };
-
-    if mode == "random" {
-        // merge all quotes
-        let mut all = Vec::new();
-        if let Some(v) = &collection.proverb { all.extend(v.clone()); }
-        if let Some(v) = &collection.haiku { all.extend(v.clone()); }
-        if let Some(v) = &collection.anime { all.extend(v.clone()); }
-        if all.is_empty() { return None; }
-        if let Some(i) = index { all.get(i).cloned() } else { all.choose(rng).cloned() }
-    } else if let Some(vec) = vec_opt {
-        if vec.is_empty() { return None; }
-        if let Some(i) = index { vec.get(i).cloned() } else { vec.choose(rng).cloned() }
-    } else {
-        None
-    }
-}
-
 fn print_boxed(
     text_lines: Vec<String>,
     bold: bool,
@@ -240,23 +210,31 @@ pub fn render(runtime: &RuntimeConfig, cli: &crate::cli::Cli) {
     };
     let mut rng = StdRng::seed_from_u64(seed);
 
-    // choose mode
-    let mode = if let Some(m) = &cli.mode {
-        match m {
-            crate::cli::Mode::Proverb => "proverb",
-            crate::cli::Mode::Haiku => "haiku",
-            crate::cli::Mode::Anime => "anime",
-            crate::cli::Mode::Random => "random",
-        }
-    } else {
-        runtime.mode.as_str()
-    };
+    let mut pool = Vec::new();
 
-    let quote = choose_quote(&runtime.quotes, mode, &mut rng, cli.index).unwrap_or(Quote {
-        japanese: "(no quote found)".to_string(),
-        translation: None,
-        source: None,
-    });
+    if runtime.modes.contains(&"proverb".to_string()) {
+        if let Some(v) = &runtime.quotes.proverb { pool.extend(v.clone()); }
+    }
+    if runtime.modes.contains(&"haiku".to_string()) {
+        if let Some(v) = &runtime.quotes.haiku { pool.extend(v.clone()); }
+    }
+    if runtime.modes.contains(&"anime".to_string()) {
+        if let Some(v) = &runtime.quotes.anime { pool.extend(v.clone()); }
+    }
+
+    if pool.is_empty() {
+        pool.push(Quote {
+            japanese: "(no quote found)".to_string(),
+            translation: None,
+            source: None,
+        });
+    }
+
+    let quote = if let Some(i) = cli.index {
+        pool.get(i).cloned()
+    } else {
+        pool.choose(&mut rng).cloned()
+    }.unwrap();
 
     let jap = simulate_font_size(&quote.japanese, &runtime.font_size);
     let jap_lines: Vec<String> = jap.lines().map(|s| s.to_string()).collect();
