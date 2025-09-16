@@ -52,7 +52,7 @@ Here you can customize:
 - `bold` - bold Japanese text
 - `border` - show a box border
 - `source` - show the quote source
-- `mode` - default quote mode
+- `modes` - list of default quote modes (`["proverb", "haiku", "anime"]`)
 - `seed` - RNG seed for random quotes
 
 Example `config.toml`:
