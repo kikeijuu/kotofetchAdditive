@@ -49,16 +49,22 @@ fn pad_to_center(line: &str, box_width: usize, centered: bool) -> String {
     line.to_string()
 }
 
-/// Center text within the inner box width.
-fn center_in_box(line: &str, inner_width: usize) -> String {
+/// Center text within the inner box width if `centered` is true.
+fn align_in_box(line: &str, inner_width: usize, centered: bool) -> String {
     let line_width = UnicodeWidthStr::width(line);
     if line_width >= inner_width {
         return line.to_string();
     }
-    let total_pad = inner_width - line_width;
-    let left = total_pad / 2;
-    let right = total_pad - left;
-    format!("{}{}{}", " ".repeat(left), line, " ".repeat(right))
+
+    if centered {
+        let total_pad = inner_width - line_width;
+        let left = total_pad / 2;
+        let right = total_pad - left;
+        format!("{}{}{}", " ".repeat(left), line, " ".repeat(right))
+    } else {
+        // left align, just pad to the right
+        format!("{}{}", line, " ".repeat(inner_width - line_width))
+    }
 }
 
 /// Create an empty line inside the box (used for spacing).
@@ -86,7 +92,7 @@ fn print_block(
 ) {
     for line in lines {
         for wline in wrap(line, inner_width) {
-            let content = center_in_box(wline.as_ref(), inner_width);
+            let content = align_in_box(wline.as_ref(), inner_width, centered);
             let line = if border {
                 format!(
                     "│{}{}{}│",
