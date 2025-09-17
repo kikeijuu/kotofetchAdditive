@@ -48,12 +48,13 @@ Here you can customize:
 - `width` - max width for text wrapping (`0` for automatic width)
 - `show_translation` - display translations (true/false)
 - `translation_color` - ANSI color for translations
-- `font_size` - small, medium, or large
-- `bold` - bold Japanese text
-- `border` - show a box border
-- `source` - show the quote source
+- `font_size` - small, medium, or large (adds spacing between characters)
+- `bold` - bold Japanese text (true/false)
+- `border` - show a box border (true/false)
+- `source` - show the quote source (true/false)
 - `modes` - list of default quote modes (`["proverb", "haiku", "anime"]`)
 - `seed` - RNG seed for random quotes (`0` for random seed)
+- `centered` - center text (true/false)
 
 Example `config.toml`:
 ```toml
@@ -69,6 +70,7 @@ border = true
 source = true
 modes = ["proverb", "anime"]
 seed = 0
+centered = true
 ```
 
 ### Custom quotes

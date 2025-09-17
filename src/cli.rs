@@ -51,6 +51,10 @@ pub struct Cli {
     /// Seed for random selection (0 = random by time)
     #[arg(long)]
     pub seed: Option<u64>,
+
+    /// Center text
+    #[arg(long)]
+    pub centered: Option<bool>,
 }
 
 #[derive(ValueEnum, Clone, Debug, PartialEq, Eq)]

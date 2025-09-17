@@ -23,6 +23,7 @@ pub struct DisplayConfig {
     pub source: Option<bool>,
     pub modes: Option<Vec<String>>,
     pub seed: Option<u64>,
+    pub centered: Option<bool>,
 }
 
 #[derive(Clone, Debug)]
@@ -39,6 +40,7 @@ pub struct RuntimeConfig {
     pub modes: Vec<String>,
     pub seed: u64,
     pub quotes: QuotesCollection,
+    pub centered: bool,
 }
 
 impl Default for RuntimeConfig {
@@ -56,6 +58,7 @@ impl Default for RuntimeConfig {
             modes: vec!["proverb".to_string(), "haiku".to_string(), "anime".to_string()],
             seed: 0, // 0 = random
             quotes: QuotesCollection::default_with_builtins(),
+            centered: true,
         }
     }
 }
@@ -113,6 +116,7 @@ pub fn make_runtime_config(
             if let Some(b) = d.source { r.source = b; }
             if let Some(m) = d.modes { r.modes = m; }
             if let Some(s) = d.seed { r.seed = s; }
+            if let Some(c) = d.centered { r.centered = c; }
         }
 
         if let Some(qs) = uf.quotes {
@@ -143,6 +147,7 @@ pub fn make_runtime_config(
     }
     
     if let Some(s) = cli.seed { r.seed = s; }
+    if let Some(c) = cli.centered { r.centered = c; }
 
     r
 }
