@@ -1,4 +1,4 @@
-use clap::{ArgAction, Parser, ValueEnum};
+use clap::{Parser, ValueEnum};
 use std::path::PathBuf;
 
 /// kotofetch — show beautiful Japanese quotes in terminal
@@ -21,9 +21,9 @@ pub struct Cli {
     #[arg(long)]
     pub width: Option<usize>,
 
-    /// Show translation (true/false)
-    #[arg(long, action = ArgAction::Set)]
-    pub show_translation: Option<bool>,
+    /// Choose translation mode: none, english or romaji
+    #[arg(long, value_enum)]
+    pub translation: Option<TranslationMode>,
 
     /// Translation color (hex like #888888 or named)
     #[arg(long)]
@@ -36,6 +36,10 @@ pub struct Cli {
     /// Draw a border around the quote
     #[arg(long)]
     pub border: Option<bool>,
+
+    /// Is the border rounded?
+    #[arg(long)]
+    pub rounded_border: Option<bool>,
 
     /// Show quote source
     #[arg(long)]
@@ -62,4 +66,11 @@ pub enum Mode {
     Proverb,
     Haiku,
     Anime,
+}
+
+#[derive(ValueEnum, Clone, Debug, PartialEq, Eq)]
+pub enum TranslationMode {
+    None,
+    English,
+    Romaji,
 }

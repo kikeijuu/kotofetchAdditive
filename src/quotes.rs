@@ -7,6 +7,7 @@ use dirs::config_dir;
 pub struct Quote {
     pub japanese: String,
     pub translation: Option<String>,
+    pub romaji: Option<String>,
     pub source: Option<String>,
 }
 

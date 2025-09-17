@@ -11,15 +11,24 @@ pub struct FileConfig {
 }
 
 #[derive(Deserialize, Debug, Clone)]
+#[serde(rename_all = "lowercase")]
+pub enum TranslationMode {
+    None,
+    English,
+    Romaji,
+}
+
+#[derive(Deserialize, Debug, Clone)]
 pub struct DisplayConfig {
     pub horizontal_padding: Option<usize>,
     pub vertical_padding: Option<usize>,
     pub width: Option<usize>,
-    pub show_translation: Option<bool>,
+    pub show_translation: Option<TranslationMode>,
     pub translation_color: Option<String>,
     pub font_size: Option<String>,
     pub bold: Option<bool>,
     pub border: Option<bool>,
+    pub rounded_border: Option<bool>,
     pub source: Option<bool>,
     pub modes: Option<Vec<String>>,
     pub seed: Option<u64>,
@@ -31,11 +40,12 @@ pub struct RuntimeConfig {
     pub horizontal_padding: usize,
     pub vertical_padding: usize,
     pub width: usize,
-    pub show_translation: bool,
+    pub show_translation: TranslationMode,
     pub translation_color: String,
     pub font_size: String,
     pub bold: bool,
     pub border: bool,
+    pub rounded_border: bool,
     pub source: bool,
     pub modes: Vec<String>,
     pub seed: u64,
@@ -49,11 +59,12 @@ impl Default for RuntimeConfig {
             horizontal_padding: 3,
             vertical_padding: 1,
             width: 0, // 0 = automatic
-            show_translation: true,
+            show_translation: TranslationMode::English,
             translation_color: "#888888".to_string(),
             font_size: "medium".to_string(),
             bold: true,
             border: true,
+            rounded_border: true,
             source: false,
             modes: vec!["proverb".to_string(), "haiku".to_string(), "anime".to_string()],
             seed: 0, // 0 = random
@@ -113,6 +124,7 @@ pub fn make_runtime_config(
             if let Some(fs) = d.font_size { r.font_size = fs; }
             if let Some(b) = d.bold { r.bold = b; }
             if let Some(b) = d.border { r.border = b; }
+            if let Some(b) = d.rounded_border { r.rounded_border = b; }
             if let Some(b) = d.source { r.source = b; }
             if let Some(m) = d.modes { r.modes = m; }
             if let Some(s) = d.seed { r.seed = s; }
@@ -130,10 +142,20 @@ pub fn make_runtime_config(
     if let Some(p) = cli.horizontal_padding { r.horizontal_padding = p; }
     if let Some(p) = cli.vertical_padding { r.vertical_padding = p; }
     if let Some(w) = cli.width { r.width = w; }
-    if let Some(st) = cli.show_translation { r.show_translation = st; }
+
+    // map CLI TranslationMode -> config::TranslationMode
+    if let Some(tmode) = &cli.translation {
+        r.show_translation = match tmode {
+            crate::cli::TranslationMode::None => TranslationMode::None,
+            crate::cli::TranslationMode::English => TranslationMode::English,
+            crate::cli::TranslationMode::Romaji => TranslationMode::Romaji,
+        };
+    }
+
     if let Some(tc) = &cli.translation_color { r.translation_color = tc.clone(); }
     if let Some(b) = cli.bold { r.bold = b; }
     if let Some(b) = cli.border { r.border = b; }
+    if let Some(b) = cli.rounded_border { r.rounded_border = b; }
     if let Some(b) = cli.source { r.source = b; }
 
     if let Some(cli_modes) = &cli.modes {

@@ -2,7 +2,7 @@
 
 kotofetch is a small, configurable CLI tool that displays Japanese quotes in the terminal. It comes with built-in quotes and allows users to customize display options such as padding, width, translation display, and text styles.
 
-![image](./images/01.png)
+![image](./images/02.jpg)
 
 ## Installation
 
@@ -46,11 +46,12 @@ User configuration lives in:
 Here you can customize:
 - `horizontal_padding` / `vertical_padding` - spacing around quotes
 - `width` - max width for text wrapping (`0` for automatic width)
-- `show_translation` - display translations (true/false)
+- `show_translation` - translation mode (`"none"`, `"english"`, `"romaji"`)
 - `translation_color` - ANSI color for translations
 - `font_size` - small, medium, or large (adds spacing between characters)
 - `bold` - bold Japanese text (true/false)
 - `border` - show a box border (true/false)
+- `rounded_border` - show rounded border (need `border` to be enabled) (true/false)
 - `source` - show the quote source (true/false)
 - `modes` - list of default quote modes (`["proverb", "haiku", "anime"]`)
 - `seed` - RNG seed for random quotes (`0` for random seed)
@@ -62,11 +63,12 @@ Example `config.toml`:
 horizontal_padding = 3
 vertical_padding = 1
 width = 50
-show_translation = true
+show_translation = "romaji"
 translation_color = "#888888"
 font_size = "medium"
 bold = true
 border = true
+rounded_border = true
 source = true
 modes = ["proverb", "anime"]
 seed = 0

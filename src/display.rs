@@ -115,6 +115,7 @@ fn print_boxed(
     vertical_padding: usize,
     width: usize,
     border: bool,
+    rounded_border: bool,
     translation: Option<&str>,
     show_translation: bool,
     translation_style: Style,
@@ -153,9 +154,16 @@ fn print_boxed(
     let box_width = inner_width + horizontal_padding * 2 + if border { 2 } else { 0 };
     let jap_style = if bold { Style::new().bold() } else { Style::new() };
 
+    let (top_left, top_right, bottom_left, bottom_right) = if rounded_border {
+        ('╭', '╮', '╰', '╯')
+    } else {
+        ('┌', '┐', '└', '┘')
+    };
+    let horiz = "─";
+
     // Top border
     if border {
-        let line = format!("┌{}┐", "─".repeat(inner_width + horizontal_padding * 2));
+        let line = format!("{}{}{}", top_left, horiz.repeat(inner_width + horizontal_padding * 2), top_right);
         println!("{}", pad_to_center(&line, box_width, centered));
     }
 
@@ -201,7 +209,7 @@ fn print_boxed(
 
     // Bottom border
     if border {
-        let line = format!("└{}┘", "─".repeat(inner_width + horizontal_padding * 2));
+        let line = format!("{}{}{}", bottom_left, horiz.repeat(inner_width + horizontal_padding * 2), bottom_right);
         println!("{}", pad_to_center(&line, box_width, centered));
     }
 }
@@ -237,6 +245,7 @@ pub fn render(runtime: &RuntimeConfig, cli: &crate::cli::Cli) {
         pool.push(Quote {
             japanese: "(no quote found)".to_string(),
             translation: None,
+            romaji: None,
             source: None,
         });
     }
@@ -256,6 +265,12 @@ pub fn render(runtime: &RuntimeConfig, cli: &crate::cli::Cli) {
     let show_source = runtime.source && quote.source.is_some();
     let source_style = Style::new().dim();
 
+    let (translation, show_translation) = match runtime.show_translation {
+        crate::config::TranslationMode::None => (None, false),
+        crate::config::TranslationMode::English => (quote.translation.as_deref(), quote.translation.is_some()),
+        crate::config::TranslationMode::Romaji => (quote.romaji.as_deref(), quote.romaji.is_some()),
+    };
+
     print_boxed(
         jap_lines,
         runtime.bold,
@@ -263,8 +278,9 @@ pub fn render(runtime: &RuntimeConfig, cli: &crate::cli::Cli) {
         runtime.vertical_padding,
         runtime.width,
         runtime.border,
-        quote.translation.as_deref(),
-        runtime.show_translation,
+        runtime.rounded_border,
+        translation,
+        show_translation,
         translation_style,
         quote.source.as_deref(),
         show_source,
