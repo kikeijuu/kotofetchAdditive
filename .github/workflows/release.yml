@@ -3,7 +3,7 @@ name: Release
 on:
   push:
     tags:
-      - "v*"   # Runs when you push a version tag like v0.2.7
+      - "v*"   # Runs when you push a version tag like v0.2.9
 
 jobs:
   build:
@@ -26,6 +26,12 @@ jobs:
       - name: Add target
         run: rustup target add ${{ matrix.target }}
 
+      - name: Install fpm
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y ruby ruby-dev rubygems build-essential
+          sudo gem install --no-document fpm
+
       - name: Build release
         run: cargo build --release --locked --target ${{ matrix.target }}
 
@@ -37,19 +43,22 @@ jobs:
           OUT_DIR=release/$TARGET
           mkdir -p $OUT_DIR
 
-          if [[ "$TARGET" == *windows* ]]; then
-            cp target/$TARGET/release/$BIN_NAME.exe $OUT_DIR/
-            cd release && zip -r ${BIN_NAME}-${VERSION}-${TARGET}.zip $TARGET
-          else
-            cp target/$TARGET/release/$BIN_NAME $OUT_DIR/
-            cd release && tar czf ${BIN_NAME}-${VERSION}-${TARGET}.tar.gz $TARGET
-          fi
+          # Standard tar.gz for generic Linux
+          cp target/$TARGET/release/$BIN_NAME $OUT_DIR/
+          cd release && tar czf ${BIN_NAME}-${VERSION}-${TARGET}.tar.gz $TARGET
+          cd ..
+
+          # Build .deb package
+          fpm -s dir -t deb -n $BIN_NAME -v $VERSION --prefix /usr/bin target/$TARGET/release/$BIN_NAME
+
+          # Build .rpm package
+          fpm -s dir -t rpm -n $BIN_NAME -v $VERSION --prefix /usr/bin target/$TARGET/release/$BIN_NAME
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
           name: kotofetch-${{ matrix.target }}
-          path: release/*
+          path: release/* *.deb *.rpm
 
   release:
     needs: build
