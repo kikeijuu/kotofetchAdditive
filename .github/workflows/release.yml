@@ -43,22 +43,26 @@ jobs:
           OUT_DIR=release/$TARGET
           mkdir -p $OUT_DIR
 
-          # Standard tar.gz for generic Linux
+          # Copy binary for tar.gz
           cp target/$TARGET/release/$BIN_NAME $OUT_DIR/
+
+          # Create tar.gz
           cd release && tar czf ${BIN_NAME}-${VERSION}-${TARGET}.tar.gz $TARGET
           cd ..
 
-          # Build .deb package
-          fpm -s dir -t deb -n $BIN_NAME -v $VERSION --prefix /usr/bin target/$TARGET/release/$BIN_NAME
+          # Build .deb package with fpm
+          fpm -s dir -t deb -n $BIN_NAME -v $VERSION --prefix /usr/bin -C target/$TARGET/release $BIN_NAME
+          # Build .rpm package with fpm
+          fpm -s dir -t rpm -n $BIN_NAME -v $VERSION --prefix /usr/bin -C target/$TARGET/release $BIN_NAME
 
-          # Build .rpm package
-          fpm -s dir -t rpm -n $BIN_NAME -v $VERSION --prefix /usr/bin target/$TARGET/release/$BIN_NAME
+          # Move all packages into release folder
+          mv *.deb *.rpm release/
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
           name: kotofetch-${{ matrix.target }}
-          path: release/* *.deb *.rpm
+          path: release/*
 
   release:
     needs: build
