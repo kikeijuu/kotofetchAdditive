@@ -22,6 +22,12 @@ cd kotofetch
 makepkg -si
 ```
 
+### Prebuilt Binaries for Linux
+You can download prebuilt binaries from the [Releases](https://github.com/hxpe-dev/kotofetch/releases). Available formats:
+- **tar.gz** (generic Linux)
+- **.deb** (Debian / Ubuntu)
+- **.rpm** (Fedora / CentOS / openSUSE)
+
 ### From Source
 Requires **Rust** and **Cargo**:
 
@@ -85,9 +91,35 @@ Place `.toml` files there with the same structure as the built-in ones (`proverb
 
 ## Usage
 ```bash
-kotofetch                           # display a random quote
-kotofetch --horizontal-padding 3    # override config temporarily
+kotofetch                           # display a quote following the config
+kotofetch --horizontal-padding 3    # override specific config parameter temporarily
 ```
+
+## Contributing
+Contributions are welcome! Here's how you can help:
+1. **Fork** the repository.
+2. **Clone** your fork locally:
+```bash
+git clone https://github.com/YOUR_USERNAME/kotofetch.git
+cd kotofetch
+```
+3. **Create a branch** for your changes:
+```bash
+git checkout -b feature/my-feature
+```
+
+4. **Make changes** and **commit**:
+```bash
+git add .
+git commit -m "Add my feature"
+```
+
+5. **Push** your branch:
+```bash
+git push origin feature/my-feature
+```
+
+6. **Open a Pull Request** on GitHub!
 
 ---
 
