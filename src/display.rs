@@ -1,6 +1,6 @@
 use crate::config::RuntimeConfig;
 use crate::quotes::Quote;
-use console::Style;
+use console::{Style, Color};
 use rand::prelude::*;
 use textwrap::wrap;
 use unicode_width::UnicodeWidthStr;
@@ -25,10 +25,47 @@ fn simulate_font_size(s: &str, size: &str) -> String {
     }
 }
 
-fn color_from_hex_like(hex: &str) -> Style {
-    let lower = hex.to_lowercase();
-    if lower.contains('8') || lower.contains('9') || lower.contains("gray") || lower.contains("grey")
-    {
+fn rgb_to_ansi256(r: u8, g: u8, b: u8) -> u8 {
+    // Map 24-bit to 6x6x6 cube (216 colors)
+    let r = (r as f32 / 255.0 * 5.0).round() as u8;
+    let g = (g as f32 / 255.0 * 5.0).round() as u8;
+    let b = (b as f32 / 255.0 * 5.0).round() as u8;
+    16 + (36 * r) + (6 * g) + b
+}
+
+fn color_from_hex(s: &str) -> Style {
+    let lower = s.to_lowercase();
+
+    // Named colors
+    match lower.as_str() {
+        "black" => return Style::new().fg(Color::Black),
+        "red" => return Style::new().fg(Color::Red),
+        "green" => return Style::new().fg(Color::Green),
+        "yellow" => return Style::new().fg(Color::Yellow),
+        "blue" => return Style::new().fg(Color::Blue),
+        "magenta" => return Style::new().fg(Color::Magenta),
+        "cyan" => return Style::new().fg(Color::Cyan),
+        "white" => return Style::new().fg(Color::White),
+        "dim" => return Style::new().dim(),
+        _ => {}
+    }
+
+    // Hex color (#RRGGBB) -> map to nearest 256-color
+    if let Some(stripped) = lower.strip_prefix('#') {
+        if stripped.len() == 6 {
+            if let (Ok(r), Ok(g), Ok(b)) = (
+                u8::from_str_radix(&stripped[0..2], 16),
+                u8::from_str_radix(&stripped[2..4], 16),
+                u8::from_str_radix(&stripped[4..6], 16),
+            ) {
+                let idx = rgb_to_ansi256(r, g, b);
+                return Style::new().fg(Color::Color256(idx));
+            }
+        }
+    }
+
+    // Fallback
+    if lower.contains("gray") || lower.contains("grey") {
         Style::new().dim()
     } else {
         Style::new()
@@ -261,7 +298,7 @@ pub fn render(runtime: &RuntimeConfig, cli: &crate::cli::Cli) {
     // render
     let jap = simulate_font_size(&quote.japanese, &runtime.font_size);
     let jap_lines: Vec<String> = jap.lines().map(|s| s.to_string()).collect();
-    let translation_style = color_from_hex_like(&runtime.translation_color);
+    let translation_style = color_from_hex(&runtime.translation_color);
     let show_source = runtime.source && quote.source.is_some();
     let source_style = Style::new().dim();
 

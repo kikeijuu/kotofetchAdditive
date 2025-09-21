@@ -53,7 +53,7 @@ Here you can customize:
 - `horizontal_padding` / `vertical_padding` - spacing around quotes
 - `width` - max width for text wrapping (`0` for automatic width)
 - `show_translation` - translation mode (`"none"`, `"english"`, `"romaji"`)
-- `translation_color` - ANSI color for translations
+- `translation_color` - named ANSI colors (`"red"`, `"yellow"`, `"dim"`, etc.) or hex (`"#ffcc00"`)
 - `font_size` - small, medium, or large (adds spacing between characters)
 - `bold` - bold Japanese text (true/false)
 - `border` - show a box border (true/false)
@@ -70,7 +70,7 @@ horizontal_padding = 3
 vertical_padding = 1
 width = 50
 show_translation = "romaji"
-translation_color = "#888888"
+translation_color = "dim"
 font_size = "medium"
 bold = true
 border = true

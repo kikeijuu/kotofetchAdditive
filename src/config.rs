@@ -60,7 +60,7 @@ impl Default for RuntimeConfig {
             vertical_padding: 1,
             width: 0, // 0 = automatic
             show_translation: TranslationMode::English,
-            translation_color: "#888888".to_string(),
+            translation_color: "dim".to_string(),
             font_size: "medium".to_string(),
             bold: true,
             border: true,
