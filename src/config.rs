@@ -66,7 +66,11 @@ impl Default for RuntimeConfig {
             border: true,
             rounded_border: true,
             source: false,
-            modes: vec!["proverb".to_string(), "haiku".to_string(), "anime".to_string()],
+            modes: vec![
+                "proverb".to_string(),
+                "haiku".to_string(),
+                "anime".to_string(),
+            ],
             seed: 0, // 0 = random
             quotes: QuotesCollection::default_with_builtins(),
             centered: true,
@@ -116,32 +120,70 @@ pub fn make_runtime_config(
     // apply user file config
     if let Some(uf) = user {
         if let Some(d) = uf.display {
-            if let Some(p) = d.horizontal_padding { r.horizontal_padding = p; }
-            if let Some(p) = d.vertical_padding { r.vertical_padding = p; }
-            if let Some(w) = d.width { r.width = w; }
-            if let Some(st) = d.show_translation { r.show_translation = st; }
-            if let Some(tc) = d.translation_color { r.translation_color = tc; }
-            if let Some(fs) = d.font_size { r.font_size = fs; }
-            if let Some(b) = d.bold { r.bold = b; }
-            if let Some(b) = d.border { r.border = b; }
-            if let Some(b) = d.rounded_border { r.rounded_border = b; }
-            if let Some(b) = d.source { r.source = b; }
-            if let Some(m) = d.modes { r.modes = m; }
-            if let Some(s) = d.seed { r.seed = s; }
-            if let Some(c) = d.centered { r.centered = c; }
+            if let Some(p) = d.horizontal_padding {
+                r.horizontal_padding = p;
+            }
+            if let Some(p) = d.vertical_padding {
+                r.vertical_padding = p;
+            }
+            if let Some(w) = d.width {
+                r.width = w;
+            }
+            if let Some(st) = d.show_translation {
+                r.show_translation = st;
+            }
+            if let Some(tc) = d.translation_color {
+                r.translation_color = tc;
+            }
+            if let Some(fs) = d.font_size {
+                r.font_size = fs;
+            }
+            if let Some(b) = d.bold {
+                r.bold = b;
+            }
+            if let Some(b) = d.border {
+                r.border = b;
+            }
+            if let Some(b) = d.rounded_border {
+                r.rounded_border = b;
+            }
+            if let Some(b) = d.source {
+                r.source = b;
+            }
+            if let Some(m) = d.modes {
+                r.modes = m;
+            }
+            if let Some(s) = d.seed {
+                r.seed = s;
+            }
+            if let Some(c) = d.centered {
+                r.centered = c;
+            }
         }
 
         if let Some(qs) = uf.quotes {
-            if qs.proverb.is_some() { r.quotes.proverb = qs.proverb; }
-            if qs.haiku.is_some() { r.quotes.haiku = qs.haiku; }
-            if qs.anime.is_some() { r.quotes.anime = qs.anime; }
+            if qs.proverb.is_some() {
+                r.quotes.proverb = qs.proverb;
+            }
+            if qs.haiku.is_some() {
+                r.quotes.haiku = qs.haiku;
+            }
+            if qs.anime.is_some() {
+                r.quotes.anime = qs.anime;
+            }
         }
     }
 
     // apply CLI overrides
-    if let Some(p) = cli.horizontal_padding { r.horizontal_padding = p; }
-    if let Some(p) = cli.vertical_padding { r.vertical_padding = p; }
-    if let Some(w) = cli.width { r.width = w; }
+    if let Some(p) = cli.horizontal_padding {
+        r.horizontal_padding = p;
+    }
+    if let Some(p) = cli.vertical_padding {
+        r.vertical_padding = p;
+    }
+    if let Some(w) = cli.width {
+        r.width = w;
+    }
 
     // map CLI TranslationMode -> config::TranslationMode
     if let Some(tmode) = &cli.translation {
@@ -152,24 +194,39 @@ pub fn make_runtime_config(
         };
     }
 
-    if let Some(tc) = &cli.translation_color { r.translation_color = tc.clone(); }
-    if let Some(b) = cli.bold { r.bold = b; }
-    if let Some(b) = cli.border { r.border = b; }
-    if let Some(b) = cli.rounded_border { r.rounded_border = b; }
-    if let Some(b) = cli.source { r.source = b; }
+    if let Some(tc) = &cli.translation_color {
+        r.translation_color = tc.clone();
+    }
+    if let Some(b) = cli.bold {
+        r.bold = b;
+    }
+    if let Some(b) = cli.border {
+        r.border = b;
+    }
+    if let Some(b) = cli.rounded_border {
+        r.rounded_border = b;
+    }
+    if let Some(b) = cli.source {
+        r.source = b;
+    }
 
     if let Some(cli_modes) = &cli.modes {
-        r.modes = cli_modes.iter().map(|m| {
-            match m {
+        r.modes = cli_modes
+            .iter()
+            .map(|m| match m {
                 crate::cli::Mode::Proverb => "proverb".to_string(),
                 crate::cli::Mode::Haiku => "haiku".to_string(),
                 crate::cli::Mode::Anime => "anime".to_string(),
-            }
-        }).collect();
+            })
+            .collect();
     }
-    
-    if let Some(s) = cli.seed { r.seed = s; }
-    if let Some(c) = cli.centered { r.centered = c; }
+
+    if let Some(s) = cli.seed {
+        r.seed = s;
+    }
+    if let Some(c) = cli.centered {
+        r.centered = c;
+    }
 
     r
 }

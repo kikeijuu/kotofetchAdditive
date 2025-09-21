@@ -1,62 +1,62 @@
 use clap::{Parser, ValueEnum};
 use std::path::PathBuf;
 
-/// kotofetch — show beautiful Japanese quotes in terminal
 #[derive(Parser, Debug)]
 #[command(author, version, about)]
 pub struct Cli {
-    /// Path to config file (TOML). Defaults to ~/.config/kotofetch/config.toml
+    // Path to config file (TOML). Defaults to ~/.config/kotofetch/config.toml
     #[arg(short, long)]
     pub config: Option<PathBuf>,
 
-    /// Override horizontal padding
+    // Horizontal padding
     #[arg(long)]
     pub horizontal_padding: Option<usize>,
 
-    /// Override vertical padding
+    // Vertical padding
     #[arg(long)]
     pub vertical_padding: Option<usize>,
 
-    /// Override width
+    // Override width (0 = automatic)
     #[arg(long)]
     pub width: Option<usize>,
 
-    /// Choose translation mode: none, english or romaji
+    // Choose translation mode: none, english or romaji
     #[arg(long, value_enum)]
     pub translation: Option<TranslationMode>,
 
-    /// Translation color (hex like #888888 or named)
+    // Translation color (hex like #888888 or named)
     #[arg(long)]
     pub translation_color: Option<String>,
 
-    /// Make Japanese text bold
+    // Make Japanese text bold
     #[arg(long)]
     pub bold: Option<bool>,
 
-    /// Draw a border around the quote
+    // Draw a border around the quote
     #[arg(long)]
     pub border: Option<bool>,
 
-    /// Is the border rounded?
+    // Is the border rounded?
     #[arg(long)]
     pub rounded_border: Option<bool>,
 
-    /// Show quote source
+    // Show quote source
     #[arg(long)]
     pub source: Option<bool>,
 
+    // Quote options
     #[arg(long, value_delimiter = ',', num_args = 1.., required = false)]
     pub modes: Option<Vec<Mode>>,
 
-    /// Choose a specific quote by index (0-based) for reproducible output
+    // Choose a specific quote by index (0-based) for reproducible output
     #[arg(long)]
     pub index: Option<usize>,
 
-    /// Seed for random selection (0 = random by time)
+    // Seed for random selection (0 = random by time)
     #[arg(long)]
     pub seed: Option<u64>,
 
-    /// Center text
+    // Center text
     #[arg(long)]
     pub centered: Option<bool>,
 }

@@ -1,7 +1,7 @@
+use dirs::config_dir;
 use serde::Deserialize;
 use std::fs;
 use std::path::PathBuf;
-use dirs::config_dir;
 
 #[derive(Deserialize, Debug, Clone)]
 pub struct Quote {
@@ -50,7 +50,7 @@ impl QuotesCollection {
     pub fn default_with_builtins() -> Self {
         let mut out = QuotesCollection::default();
 
-        // --- load built-ins (from repo) ---
+        // load built-ins (from repo)
         let prov_toml = include_str!("../quotes/proverb.toml");
         let h_toml = include_str!("../quotes/haiku.toml");
         let a_toml = include_str!("../quotes/anime.toml");
@@ -59,7 +59,7 @@ impl QuotesCollection {
         out.haiku = Self::parse_quotes(h_toml);
         out.anime = Self::parse_quotes(a_toml);
 
-        // --- try to override from ~/.config/kotofetch/quotes ---
+        // try to override from ~/.config/kotofetch/quotes
         if let Some(mut cfg_dir) = config_dir() {
             cfg_dir.push("kotofetch/quotes");
 

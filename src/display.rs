@@ -1,23 +1,35 @@
 use crate::config::RuntimeConfig;
 use crate::quotes::Quote;
-use console::{Style, Color};
+use console::{Color, Style};
 use rand::prelude::*;
+use term_size;
 use textwrap::wrap;
 use unicode_width::UnicodeWidthStr;
-use term_size;
 
 fn simulate_font_size(s: &str, size: &str) -> String {
     match size {
         "small" => s.to_string(),
         "medium" => s
             .chars()
-            .map(|c| if c == '\n' { "\n".to_string() } else { format!("{c} ") })
+            .map(|c| {
+                if c == '\n' {
+                    "\n".to_string()
+                } else {
+                    format!("{c} ")
+                }
+            })
             .collect::<String>()
             .trim_end()
             .to_string(),
         "large" => s
             .chars()
-            .map(|c| if c == '\n' { "\n".to_string() } else { format!("{c}  ") })
+            .map(|c| {
+                if c == '\n' {
+                    "\n".to_string()
+                } else {
+                    format!("{c}  ")
+                }
+            })
             .collect::<String>()
             .trim_end()
             .to_string(),
@@ -72,7 +84,7 @@ fn color_from_hex(s: &str) -> Style {
     }
 }
 
-/// Center a whole line in the terminal if `centered` is true.
+// Center a whole line in the terminal if `centered` is true.
 fn pad_to_center(line: &str, box_width: usize, centered: bool) -> String {
     if !centered {
         return line.to_string();
@@ -86,7 +98,7 @@ fn pad_to_center(line: &str, box_width: usize, centered: bool) -> String {
     line.to_string()
 }
 
-/// Center text within the inner box width if `centered` is true.
+// Center text within the inner box width if `centered` is true.
 fn align_in_box(line: &str, inner_width: usize, centered: bool) -> String {
     let line_width = UnicodeWidthStr::width(line);
     if line_width >= inner_width {
@@ -104,7 +116,7 @@ fn align_in_box(line: &str, inner_width: usize, centered: bool) -> String {
     }
 }
 
-/// Create an empty line inside the box (used for spacing).
+// Create an empty line inside the box (used for spacing).
 fn blank_line(inner_width: usize, horizontal_padding: usize, border: bool) -> String {
     if border {
         format!(
@@ -138,7 +150,11 @@ fn print_block(
                     " ".repeat(horizontal_padding)
                 )
             } else {
-                format!("{}{}", " ".repeat(horizontal_padding), style.apply_to(content))
+                format!(
+                    "{}{}",
+                    " ".repeat(horizontal_padding),
+                    style.apply_to(content)
+                )
             };
             println!("{}", pad_to_center(&line, box_width, centered));
         }
@@ -189,7 +205,11 @@ fn print_boxed(
     };
 
     let box_width = inner_width + horizontal_padding * 2 + if border { 2 } else { 0 };
-    let jap_style = if bold { Style::new().bold() } else { Style::new() };
+    let jap_style = if bold {
+        Style::new().bold()
+    } else {
+        Style::new()
+    };
 
     let (top_left, top_right, bottom_left, bottom_right) = if rounded_border {
         ('╭', '╮', '╰', '╯')
@@ -200,30 +220,72 @@ fn print_boxed(
 
     // Top border
     if border {
-        let line = format!("{}{}{}", top_left, horiz.repeat(inner_width + horizontal_padding * 2), top_right);
+        let line = format!(
+            "{}{}{}",
+            top_left,
+            horiz.repeat(inner_width + horizontal_padding * 2),
+            top_right
+        );
         println!("{}", pad_to_center(&line, box_width, centered));
     }
 
     // Vertical padding (top)
     for _ in 0..vertical_padding {
-        println!("{}", pad_to_center(&blank_line(inner_width, horizontal_padding, border), box_width, centered));
+        println!(
+            "{}",
+            pad_to_center(
+                &blank_line(inner_width, horizontal_padding, border),
+                box_width,
+                centered
+            )
+        );
     }
 
     // Japanese text
-    print_block(&text_lines, jap_style, inner_width, horizontal_padding, border, box_width, centered);
+    print_block(
+        &text_lines,
+        jap_style,
+        inner_width,
+        horizontal_padding,
+        border,
+        box_width,
+        centered,
+    );
 
     // Translation
     if show_translation {
         if let Some(t) = translation {
-            println!("{}", pad_to_center(&blank_line(inner_width, horizontal_padding, border), box_width, centered));
-            print_block(&[t.to_string()], translation_style, inner_width, horizontal_padding, border, box_width, centered);
+            println!(
+                "{}",
+                pad_to_center(
+                    &blank_line(inner_width, horizontal_padding, border),
+                    box_width,
+                    centered
+                )
+            );
+            print_block(
+                &[t.to_string()],
+                translation_style,
+                inner_width,
+                horizontal_padding,
+                border,
+                box_width,
+                centered,
+            );
         }
     }
 
     // Source
     if show_source {
         if let Some(s) = source {
-            println!("{}", pad_to_center(&blank_line(inner_width, horizontal_padding, border), box_width, centered));
+            println!(
+                "{}",
+                pad_to_center(
+                    &blank_line(inner_width, horizontal_padding, border),
+                    box_width,
+                    centered
+                )
+            );
             let wrapped: Vec<String> = wrap(s, inner_width.saturating_sub(2))
                 .into_iter()
                 .enumerate()
@@ -235,18 +297,38 @@ fn print_boxed(
                     }
                 })
                 .collect();
-            print_block(&wrapped, source_style, inner_width, horizontal_padding, border, box_width, centered);
+            print_block(
+                &wrapped,
+                source_style,
+                inner_width,
+                horizontal_padding,
+                border,
+                box_width,
+                centered,
+            );
         }
     }
 
     // Vertical padding (bottom)
     for _ in 0..vertical_padding {
-        println!("{}", pad_to_center(&blank_line(inner_width, horizontal_padding, border), box_width, centered));
+        println!(
+            "{}",
+            pad_to_center(
+                &blank_line(inner_width, horizontal_padding, border),
+                box_width,
+                centered
+            )
+        );
     }
 
     // Bottom border
     if border {
-        let line = format!("{}{}{}", bottom_left, horiz.repeat(inner_width + horizontal_padding * 2), bottom_right);
+        let line = format!(
+            "{}{}{}",
+            bottom_left,
+            horiz.repeat(inner_width + horizontal_padding * 2),
+            bottom_right
+        );
         println!("{}", pad_to_center(&line, box_width, centered));
     }
 }
@@ -304,7 +386,9 @@ pub fn render(runtime: &RuntimeConfig, cli: &crate::cli::Cli) {
 
     let (translation, show_translation) = match runtime.show_translation {
         crate::config::TranslationMode::None => (None, false),
-        crate::config::TranslationMode::English => (quote.translation.as_deref(), quote.translation.is_some()),
+        crate::config::TranslationMode::English => {
+            (quote.translation.as_deref(), quote.translation.is_some())
+        }
         crate::config::TranslationMode::Romaji => (quote.romaji.as_deref(), quote.romaji.is_some()),
     };
 
