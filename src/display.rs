@@ -368,20 +368,20 @@ pub fn render(runtime: &RuntimeConfig, cli: &crate::cli::Cli) {
             } else {
                 eprintln!("Failed to read file: {}", path.display());
             }
-            continue; // skip to next mode
-        } else {
-            eprintln!("Warning: mode file not found: {}", path.display());
+            continue; // skip built-in if config exists
         }
 
+        // fallback to built-in
+        let file_str = file_name.to_str().unwrap_or_default();
         if let Some((_, content)) = BUILTIN_QUOTES.iter()
             .find(|&&(name, _)| name == file_name.to_str().unwrap())
         {
             match toml::from_str::<QuotesFile>(content) {
                 Ok(parsed) => pool.extend(parsed.quotes),
-                Err(e) => eprintln!("Failed to parse built-in {}: {e}", file_name.display()),
+                Err(e) => eprintln!("Failed to parse built-in {}: {e}", file_str),
             }
         } else {
-            eprintln!("Warning: mode file not found: {}", file_name.display());
+            eprintln!("Warning: mode file not found in config or built-in: {}", file_str);
         }
     }
 
