@@ -59,7 +59,7 @@ Here you can customize:
 - `border` - show a box border (true/false)
 - `rounded_border` - show rounded border (need `border` to be enabled) (true/false)
 - `source` - show the quote source (true/false)
-- `modes` - list of default quote modes (`["proverb", "haiku", "anime"]`)
+- `modes` - list of quote files to use (any `.toml` file in `~/.config/kotofetch/quotes/` or built-in)
 - `seed` - RNG seed for random quotes (`0` for random seed)
 - `centered` - center text (true/false)
 
@@ -86,13 +86,31 @@ Built-in quotes are embedded in the binary. To add your own quotes, create:
 ```
 ~/.config/kotofetch/quotes/
 ```
+- Place any `.toml` file there.
+- The filenames can be arbitrary, the program automatically reads all `.toml` files in this folder.
+- Each `.toml` must follow this structure:
 
-Place `.toml` files there with the same structure as the built-in ones (`proverbs.toml`, `haiku.toml`, `anime.toml`, see [this](https://github.com/hxpe-dev/kotofetch/tree/main/quotes)). These will automatically merge with the built-in quotes.
+```toml
+[[quote]]
+japanese = "逃げちゃダメだ"
+translation = "You mustn't run away."
+romaji = "Nigeccha dame da"
+source = "Neon Genesis Evangelion"
+
+[[quote]]
+japanese = "人は心で生きるんだ"
+translation = "People live by their hearts."
+romaji = "Hito wa kokoro de ikiru nda"
+source = "Your Name"
+```
+- These custom quotes automatically merge with the built-in ones.
+> **Tip:** You can rename the built-in examples files (`anime.toml`, `proverb.toml`, `haiku.toml`) or create new ones, the program detects them automatically.
 
 ## Usage
 ```bash
 kotofetch                           # display a quote following the config
 kotofetch --horizontal-padding 3    # override specific config parameter temporarily
+kotofetch --modes anime,mycustomquotes # display quotes from specific files
 ```
 
 ## Contributing
