@@ -46,7 +46,7 @@ pub struct Cli {
 
     // Quote options
     #[arg(long, value_delimiter = ',', num_args = 1.., required = false)]
-    pub modes: Option<Vec<Mode>>,
+    pub modes: Option<Vec<PathBuf>>,
 
     // Choose a specific quote by index (0-based) for reproducible output
     #[arg(long)]
@@ -59,13 +59,6 @@ pub struct Cli {
     // Center text
     #[arg(long)]
     pub centered: Option<bool>,
-}
-
-#[derive(ValueEnum, Clone, Debug, PartialEq, Eq)]
-pub enum Mode {
-    Proverb,
-    Haiku,
-    Anime,
 }
 
 #[derive(ValueEnum, Clone, Debug, PartialEq, Eq)]

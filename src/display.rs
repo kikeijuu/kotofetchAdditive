@@ -1,10 +1,13 @@
 use crate::config::RuntimeConfig;
 use crate::quotes::Quote;
+use crate::quotes::QuotesFile;
 use console::{Color, Style};
 use rand::prelude::*;
 use term_size;
 use textwrap::wrap;
 use unicode_width::UnicodeWidthStr;
+use std::path::PathBuf;
+use std::fs;
 
 fn simulate_font_size(s: &str, size: &str) -> String {
     match size {
@@ -344,19 +347,36 @@ pub fn render(runtime: &RuntimeConfig, cli: &crate::cli::Cli) {
 
     // collect quotes
     let mut pool = Vec::new();
-    if runtime.modes.contains(&"proverb".to_string()) {
-        if let Some(v) = &runtime.quotes.proverb {
-            pool.extend(v.clone());
+    for mode_file in &runtime.modes {
+        // Ensure the file has .toml extension
+        let mut file_name = mode_file.clone();
+        if file_name.extension().is_none() {
+            file_name.set_extension("toml");
         }
-    }
-    if runtime.modes.contains(&"haiku".to_string()) {
-        if let Some(v) = &runtime.quotes.haiku {
-            pool.extend(v.clone());
+
+        // Look in ~/.config/kotofetch/quotes first
+        let mut path = dirs::config_dir().unwrap_or_default();
+        path.push("kotofetch/quotes");
+        path.push(&file_name);
+
+        // If not found, fallback to built-in repo folder
+        if !path.exists() {
+            path = PathBuf::from(env!("CARGO_MANIFEST_DIR"))
+                .join("quotes")
+                .join(&file_name);
         }
-    }
-    if runtime.modes.contains(&"anime".to_string()) {
-        if let Some(v) = &runtime.quotes.anime {
-            pool.extend(v.clone());
+
+        if path.exists() {
+            if let Ok(s) = fs::read_to_string(&path) {
+                match toml::from_str::<QuotesFile>(&s) {
+                    Ok(parsed) => pool.extend(parsed.quotes),
+                    Err(e) => eprintln!("Failed to parse {}: {e}", path.display()),
+                }
+            } else {
+                eprintln!("Failed to read file: {}", path.display());
+            }
+        } else {
+            eprintln!("Warning: mode file not found: {}", path.display());
         }
     }
 

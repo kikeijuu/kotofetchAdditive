@@ -1,4 +1,3 @@
-use crate::quotes::QuotesCollection;
 use dirs::config_dir;
 use serde::Deserialize;
 use std::fs;
@@ -7,7 +6,6 @@ use std::path::PathBuf;
 #[derive(Deserialize, Debug, Clone)]
 pub struct FileConfig {
     pub display: Option<DisplayConfig>,
-    pub quotes: Option<QuotesCollection>,
 }
 
 #[derive(Deserialize, Debug, Clone)]
@@ -30,7 +28,7 @@ pub struct DisplayConfig {
     pub border: Option<bool>,
     pub rounded_border: Option<bool>,
     pub source: Option<bool>,
-    pub modes: Option<Vec<String>>,
+    pub modes: Option<Vec<PathBuf>>,
     pub seed: Option<u64>,
     pub centered: Option<bool>,
 }
@@ -47,9 +45,8 @@ pub struct RuntimeConfig {
     pub border: bool,
     pub rounded_border: bool,
     pub source: bool,
-    pub modes: Vec<String>,
+    pub modes: Vec<PathBuf>,
     pub seed: u64,
-    pub quotes: QuotesCollection,
     pub centered: bool,
 }
 
@@ -66,13 +63,13 @@ impl Default for RuntimeConfig {
             border: true,
             rounded_border: true,
             source: false,
+            // by default look for example TOML files
             modes: vec![
-                "proverb".to_string(),
-                "haiku".to_string(),
-                "anime".to_string(),
+                PathBuf::from("proverb.toml"),
+                PathBuf::from("haiku.toml"),
+                PathBuf::from("anime.toml"),
             ],
             seed: 0, // 0 = random
-            quotes: QuotesCollection::default_with_builtins(),
             centered: true,
         }
     }
@@ -109,13 +106,9 @@ pub fn load_user_config(path_override: Option<PathBuf>) -> Option<FileConfig> {
 
 pub fn make_runtime_config(
     user: Option<FileConfig>,
-    builtins: QuotesCollection,
     cli: &crate::cli::Cli,
 ) -> RuntimeConfig {
     let mut r = RuntimeConfig::default();
-
-    // base builtins
-    r.quotes = builtins;
 
     // apply user file config
     if let Some(uf) = user {
@@ -151,25 +144,13 @@ pub fn make_runtime_config(
                 r.source = b;
             }
             if let Some(m) = d.modes {
-                r.modes = m;
+                r.modes = m.into_iter().map(|s| PathBuf::from(s)).collect();
             }
             if let Some(s) = d.seed {
                 r.seed = s;
             }
             if let Some(c) = d.centered {
                 r.centered = c;
-            }
-        }
-
-        if let Some(qs) = uf.quotes {
-            if qs.proverb.is_some() {
-                r.quotes.proverb = qs.proverb;
-            }
-            if qs.haiku.is_some() {
-                r.quotes.haiku = qs.haiku;
-            }
-            if qs.anime.is_some() {
-                r.quotes.anime = qs.anime;
             }
         }
     }
@@ -211,14 +192,7 @@ pub fn make_runtime_config(
     }
 
     if let Some(cli_modes) = &cli.modes {
-        r.modes = cli_modes
-            .iter()
-            .map(|m| match m {
-                crate::cli::Mode::Proverb => "proverb".to_string(),
-                crate::cli::Mode::Haiku => "haiku".to_string(),
-                crate::cli::Mode::Anime => "anime".to_string(),
-            })
-            .collect();
+        r.modes = cli_modes.clone();
     }
 
     if let Some(s) = cli.seed {
