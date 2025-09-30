@@ -1,12 +1,12 @@
 use crate::config::RuntimeConfig;
 use crate::quotes::Quote;
 use crate::quotes::QuotesFile;
+use crate::quotes::BUILTIN_QUOTES;
 use console::{Color, Style};
 use rand::prelude::*;
 use term_size;
 use textwrap::wrap;
 use unicode_width::UnicodeWidthStr;
-use std::path::PathBuf;
 use std::fs;
 
 fn simulate_font_size(s: &str, size: &str) -> String {
@@ -359,13 +359,6 @@ pub fn render(runtime: &RuntimeConfig, cli: &crate::cli::Cli) {
         path.push("kotofetch/quotes");
         path.push(&file_name);
 
-        // If not found, fallback to built-in repo folder
-        if !path.exists() {
-            path = PathBuf::from(env!("CARGO_MANIFEST_DIR"))
-                .join("quotes")
-                .join(&file_name);
-        }
-
         if path.exists() {
             if let Ok(s) = fs::read_to_string(&path) {
                 match toml::from_str::<QuotesFile>(&s) {
@@ -375,8 +368,20 @@ pub fn render(runtime: &RuntimeConfig, cli: &crate::cli::Cli) {
             } else {
                 eprintln!("Failed to read file: {}", path.display());
             }
+            continue; // skip to next mode
         } else {
             eprintln!("Warning: mode file not found: {}", path.display());
+        }
+
+        if let Some((_, content)) = BUILTIN_QUOTES.iter()
+            .find(|&&(name, _)| name == file_name.to_str().unwrap())
+        {
+            match toml::from_str::<QuotesFile>(content) {
+                Ok(parsed) => pool.extend(parsed.quotes),
+                Err(e) => eprintln!("Failed to parse built-in {}: {e}", file_name.display()),
+            }
+        } else {
+            eprintln!("Warning: mode file not found: {}", file_name.display());
         }
     }
 
