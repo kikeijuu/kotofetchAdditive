@@ -15,7 +15,7 @@ yay -S kotofetch
 
 > When prompted, choose All to clean-build the package from the downloaded PKGBUILD.
 
-Or clone and build manually from [here](https://aur.archlinux.org/packages/kotofetch):
+Or by cloning the AUR from [here](https://aur.archlinux.org/packages/kotofetch):
 ```bash
 git clone https://aur.archlinux.org/kotofetch.git
 cd kotofetch
