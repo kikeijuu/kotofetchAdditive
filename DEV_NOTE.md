@@ -24,3 +24,14 @@ git add PKGBUILD .SRCINFO
 git commit -m "Update to 0.2.1"                 # Match version
 git push aur master
 ```
+
+For the [default.nix](default.nix) file
+```bash
+cp ~/Documents/Dev/kotofetch/default.nix ~/nix-test/default.nix
+nix-build ~/nix-test/default.nix
+# This will fail, copy the correct sha256
+nvim ~/Documents/Dev/kotofetch/default.nix # Replace the outdated sha256 with the new one
+git add default.nix
+git commit -m "Nix bump to latest"
+git push
+```

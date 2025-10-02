@@ -22,6 +22,24 @@ cd kotofetch
 makepkg -si
 ```
 
+### Nix / NixOS
+If you use Nix, you can install `kotofetch` using this one-line command:
+```bash
+nix-build https://raw.githubusercontent.com/hxpe-dev/kotofetch/main/default.nix
+```
+
+You can also clone the whole repo and execute `default.nix`:
+```bash
+git clone https://github.com/hxpe-dev/kotofetch.git
+cd kotofetch
+nix-build
+```
+
+You can also run using Nix's temporary environment:
+```bash
+nix run https://raw.githubusercontent.com/hxpe-dev/kotofetch/main/default.nix
+```
+
 ### Prebuilt Binaries for Linux
 You can download prebuilt binaries from the [Releases](https://github.com/hxpe-dev/kotofetch/releases). Available formats:
 - **tar.gz** (generic Linux)
@@ -53,8 +71,8 @@ Here you can customize:
 - `horizontal_padding` / `vertical_padding` - spacing around quotes
 - `width` - max width for text wrapping (`0` for automatic width)
 - `show_translation` - translation mode (`"none"`, `"english"`, `"romaji"`)
-- `translation_color` - named ANSI colors (`"red"`, `"yellow"`, `"dim"`, etc.) or hex (`"#ffcc00"`)
 - `quote_color` - named ANSI colors (`"red"`, `"yellow"`, `"dim"`, etc.) or hex (`"#ffcc00"`)
+- `translation_color` - named ANSI colors (`"red"`, `"yellow"`, `"dim"`, etc.) or hex (`"#ffcc00"`)
 - `border_color` - named ANSI colors (`"red"`, `"yellow"`, `"dim"`, etc.) or hex (`"#ffcc00"`)
 - `font_size` - small, medium, or large (adds spacing between characters)
 - `bold` - bold Japanese text (true/false)
@@ -72,8 +90,8 @@ horizontal_padding = 3
 vertical_padding = 1
 width = 50
 show_translation = "romaji"
-translation_color = "dim"
 quote_color = "#a3be8c"
+translation_color = "dim"
 border_color = "#be8ca3"
 font_size = "medium"
 bold = true
