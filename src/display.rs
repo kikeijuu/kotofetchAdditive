@@ -166,7 +166,7 @@ fn print_block(
 
 fn print_boxed(
     text_lines: Vec<String>,
-    bold: bool,
+    jap_style: Style,
     horizontal_padding: usize,
     vertical_padding: usize,
     width: usize,
@@ -208,11 +208,11 @@ fn print_boxed(
     };
 
     let box_width = inner_width + horizontal_padding * 2 + if border { 2 } else { 0 };
-    let jap_style = if bold {
-        Style::new().bold()
-    } else {
-        Style::new()
-    };
+    // let jap_style = if bold {
+    //     Style::new().bold()
+    // } else {
+    //     Style::new()
+    // };
 
     let (top_left, top_right, bottom_left, bottom_right) = if rounded_border {
         ('╭', '╮', '╰', '╯')
@@ -417,9 +417,15 @@ pub fn render(runtime: &RuntimeConfig, cli: &crate::cli::Cli) {
         crate::config::TranslationMode::Romaji => (quote.romaji.as_deref(), quote.romaji.is_some()),
     };
 
+    let jap_style = if runtime.bold {
+        color_from_hex(&runtime.quote_color).bold()
+    } else {
+        color_from_hex(&runtime.quote_color)
+    };
+
     print_boxed(
         jap_lines,
-        runtime.bold,
+        jap_style,
         runtime.horizontal_padding,
         runtime.vertical_padding,
         runtime.width,
