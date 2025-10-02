@@ -54,6 +54,8 @@ Here you can customize:
 - `width` - max width for text wrapping (`0` for automatic width)
 - `show_translation` - translation mode (`"none"`, `"english"`, `"romaji"`)
 - `translation_color` - named ANSI colors (`"red"`, `"yellow"`, `"dim"`, etc.) or hex (`"#ffcc00"`)
+- `quote_color` - named ANSI colors (`"red"`, `"yellow"`, `"dim"`, etc.) or hex (`"#ffcc00"`)
+- `border_color` - named ANSI colors (`"red"`, `"yellow"`, `"dim"`, etc.) or hex (`"#ffcc00"`)
 - `font_size` - small, medium, or large (adds spacing between characters)
 - `bold` - bold Japanese text (true/false)
 - `border` - show a box border (true/false)
@@ -71,6 +73,8 @@ vertical_padding = 1
 width = 50
 show_translation = "romaji"
 translation_color = "dim"
+quote_color = "#a3be8c"
+border_color = "#be8ca3"
 font_size = "medium"
 bold = true
 border = true
@@ -108,9 +112,9 @@ source = "Your Name"
 
 ## Usage
 ```bash
-kotofetch                           # display a quote following the config
-kotofetch --horizontal-padding 3    # override specific config parameter temporarily
-kotofetch --modes anime,mycustomquotes # display quotes from specific files
+kotofetch                               # display a quote following the config
+kotofetch --horizontal-padding 3        # override specific config parameter temporarily
+kotofetch --modes anime,mycustomquotes  # display quotes from specific files
 ```
 
 ## Contributing
