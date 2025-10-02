@@ -28,6 +28,10 @@ pub struct Cli {
     #[arg(long)]
     pub translation_color: Option<String>,
 
+    // Quote color (hex like #888888 or named)
+    #[arg(long)]
+    pub quote_color: Option<String>,
+
     // Make Japanese text bold
     #[arg(long)]
     pub bold: Option<bool>,
@@ -39,6 +43,10 @@ pub struct Cli {
     // Is the border rounded?
     #[arg(long)]
     pub rounded_border: Option<bool>,
+
+    // Border color (hex like #888888 or named)
+    #[arg(long)]
+    pub border_color: Option<String>,
 
     // Show quote source
     #[arg(long)]

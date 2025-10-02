@@ -23,10 +23,12 @@ pub struct DisplayConfig {
     pub width: Option<usize>,
     pub show_translation: Option<TranslationMode>,
     pub translation_color: Option<String>,
+    pub quote_color: Option<String>,
     pub font_size: Option<String>,
     pub bold: Option<bool>,
     pub border: Option<bool>,
     pub rounded_border: Option<bool>,
+    pub border_color: Option<String>,
     pub source: Option<bool>,
     pub modes: Option<Vec<PathBuf>>,
     pub seed: Option<u64>,
@@ -40,10 +42,12 @@ pub struct RuntimeConfig {
     pub width: usize,
     pub show_translation: TranslationMode,
     pub translation_color: String,
+    pub quote_color: String,
     pub font_size: String,
     pub bold: bool,
     pub border: bool,
     pub rounded_border: bool,
+    pub border_color: String,
     pub source: bool,
     pub modes: Vec<PathBuf>,
     pub seed: u64,
@@ -58,6 +62,8 @@ impl Default for RuntimeConfig {
             width: 0, // 0 = automatic
             show_translation: TranslationMode::English,
             translation_color: "dim".to_string(),
+            quote_color: "white".to_string(),
+            border_color: "white".to_string(),
             font_size: "medium".to_string(),
             bold: true,
             border: true,
@@ -128,6 +134,9 @@ pub fn make_runtime_config(
             if let Some(tc) = d.translation_color {
                 r.translation_color = tc;
             }
+            if let Some(qc) = d.quote_color {
+                r.quote_color = qc;
+            }
             if let Some(fs) = d.font_size {
                 r.font_size = fs;
             }
@@ -139,6 +148,9 @@ pub fn make_runtime_config(
             }
             if let Some(b) = d.rounded_border {
                 r.rounded_border = b;
+            }
+            if let Some(bc) = d.border_color {
+                r.border_color = bc;
             }
             if let Some(b) = d.source {
                 r.source = b;
@@ -178,6 +190,9 @@ pub fn make_runtime_config(
     if let Some(tc) = &cli.translation_color {
         r.translation_color = tc.clone();
     }
+    if let Some(qc) = &cli.quote_color {
+        r.quote_color = qc.clone();
+    }
     if let Some(b) = cli.bold {
         r.bold = b;
     }
@@ -187,6 +202,9 @@ pub fn make_runtime_config(
     if let Some(b) = cli.rounded_border {
         r.rounded_border = b;
     }
+    if let Some(bc) = &cli.border_color {
+        r.border_color = bc.clone();
+}
     if let Some(b) = cli.source {
         r.source = b;
     }
