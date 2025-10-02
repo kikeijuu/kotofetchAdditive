@@ -120,13 +120,15 @@ fn align_in_box(line: &str, inner_width: usize, centered: bool) -> String {
 }
 
 // Create an empty line inside the box (used for spacing).
-fn blank_line(inner_width: usize, horizontal_padding: usize, border: bool) -> String {
+fn blank_line(inner_width: usize, horizontal_padding: usize, border: bool, border_color: &Style) -> String {
     if border {
         format!(
-            "│{}{}{}│",
+            "{}{}{}{}{}",
+            border_color.apply_to("│"),
             " ".repeat(horizontal_padding),
             " ".repeat(inner_width),
-            " ".repeat(horizontal_padding)
+            " ".repeat(horizontal_padding),
+            border_color.apply_to("│")
         )
     } else {
         " ".repeat(horizontal_padding + inner_width)
@@ -141,16 +143,19 @@ fn print_block(
     border: bool,
     box_width: usize,
     centered: bool,
+    border_color: &Style, // <-- add this parameter
 ) {
     for line in lines {
         for wline in wrap(line, inner_width) {
             let content = align_in_box(wline.as_ref(), inner_width, centered);
             let line = if border {
                 format!(
-                    "│{}{}{}│",
+                    "{}{}{}{}{}",
+                    border_color.apply_to("│"),
                     " ".repeat(horizontal_padding),
                     style.apply_to(content),
-                    " ".repeat(horizontal_padding)
+                    " ".repeat(horizontal_padding),
+                    border_color.apply_to("│")
                 )
             } else {
                 format!(
@@ -172,6 +177,7 @@ fn print_boxed(
     width: usize,
     border: bool,
     rounded_border: bool,
+    border_color: Style,
     translation: Option<&str>,
     show_translation: bool,
     translation_style: Style,
@@ -229,7 +235,7 @@ fn print_boxed(
             horiz.repeat(inner_width + horizontal_padding * 2),
             top_right
         );
-        println!("{}", pad_to_center(&line, box_width, centered));
+        println!("{}", border_color.apply_to(pad_to_center(&line, box_width, centered)));
     }
 
     // Vertical padding (top)
@@ -237,7 +243,7 @@ fn print_boxed(
         println!(
             "{}",
             pad_to_center(
-                &blank_line(inner_width, horizontal_padding, border),
+                &blank_line(inner_width, horizontal_padding, border, &border_color),
                 box_width,
                 centered
             )
@@ -253,6 +259,7 @@ fn print_boxed(
         border,
         box_width,
         centered,
+        &border_color
     );
 
     // Translation
@@ -261,7 +268,7 @@ fn print_boxed(
             println!(
                 "{}",
                 pad_to_center(
-                    &blank_line(inner_width, horizontal_padding, border),
+                    &blank_line(inner_width, horizontal_padding, border, &border_color),
                     box_width,
                     centered
                 )
@@ -274,6 +281,7 @@ fn print_boxed(
                 border,
                 box_width,
                 centered,
+                &border_color
             );
         }
     }
@@ -284,7 +292,7 @@ fn print_boxed(
             println!(
                 "{}",
                 pad_to_center(
-                    &blank_line(inner_width, horizontal_padding, border),
+                    &blank_line(inner_width, horizontal_padding, border, &border_color),
                     box_width,
                     centered
                 )
@@ -308,6 +316,7 @@ fn print_boxed(
                 border,
                 box_width,
                 centered,
+                &border_color
             );
         }
     }
@@ -317,7 +326,7 @@ fn print_boxed(
         println!(
             "{}",
             pad_to_center(
-                &blank_line(inner_width, horizontal_padding, border),
+                &blank_line(inner_width, horizontal_padding, border, &border_color),
                 box_width,
                 centered
             )
@@ -332,7 +341,7 @@ fn print_boxed(
             horiz.repeat(inner_width + horizontal_padding * 2),
             bottom_right
         );
-        println!("{}", pad_to_center(&line, box_width, centered));
+        println!("{}", border_color.apply_to(pad_to_center(&line, box_width, centered)));
     }
 }
 
@@ -423,6 +432,8 @@ pub fn render(runtime: &RuntimeConfig, cli: &crate::cli::Cli) {
         color_from_hex(&runtime.quote_color)
     };
 
+    let border_color = color_from_hex(&runtime.border_color);
+
     print_boxed(
         jap_lines,
         jap_style,
@@ -431,6 +442,7 @@ pub fn render(runtime: &RuntimeConfig, cli: &crate::cli::Cli) {
         runtime.width,
         runtime.border,
         runtime.rounded_border,
+        border_color,
         translation,
         show_translation,
         translation_style,

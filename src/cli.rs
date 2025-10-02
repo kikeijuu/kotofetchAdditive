@@ -44,6 +44,10 @@ pub struct Cli {
     #[arg(long)]
     pub rounded_border: Option<bool>,
 
+    // Border color (hex like #888888 or named)
+    #[arg(long)]
+    pub border_color: Option<String>,
+
     // Show quote source
     #[arg(long)]
     pub source: Option<bool>,

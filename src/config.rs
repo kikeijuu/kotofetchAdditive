@@ -28,6 +28,7 @@ pub struct DisplayConfig {
     pub bold: Option<bool>,
     pub border: Option<bool>,
     pub rounded_border: Option<bool>,
+    pub border_color: Option<String>,
     pub source: Option<bool>,
     pub modes: Option<Vec<PathBuf>>,
     pub seed: Option<u64>,
@@ -46,6 +47,7 @@ pub struct RuntimeConfig {
     pub bold: bool,
     pub border: bool,
     pub rounded_border: bool,
+    pub border_color: String,
     pub source: bool,
     pub modes: Vec<PathBuf>,
     pub seed: u64,
@@ -61,6 +63,7 @@ impl Default for RuntimeConfig {
             show_translation: TranslationMode::English,
             translation_color: "dim".to_string(),
             quote_color: "white".to_string(),
+            border_color: "white".to_string(),
             font_size: "medium".to_string(),
             bold: true,
             border: true,
@@ -146,6 +149,9 @@ pub fn make_runtime_config(
             if let Some(b) = d.rounded_border {
                 r.rounded_border = b;
             }
+            if let Some(bc) = d.border_color {
+                r.border_color = bc;
+            }
             if let Some(b) = d.source {
                 r.source = b;
             }
@@ -196,6 +202,9 @@ pub fn make_runtime_config(
     if let Some(b) = cli.rounded_border {
         r.rounded_border = b;
     }
+    if let Some(bc) = &cli.border_color {
+        r.border_color = bc.clone();
+}
     if let Some(b) = cli.source {
         r.source = b;
     }
