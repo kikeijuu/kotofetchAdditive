@@ -16,6 +16,9 @@ git push origin v0.2.1                          # Example version
 In the AUR repo folder
 ```bash
 nvim PKGBUILD # Once in here change the version to match the one in the github repo
+makepkg -g # Generate new sha256sums for all sources
+# Copy the sha256sums output into PKGBUILD (replace old ones)
+makepkg -C # Verify build + checksum validity
 makepkg --printsrcinfo > .SRCINFO
 git add PKGBUILD .SRCINFO
 git commit -m "Update to 0.2.1"                 # Match version
