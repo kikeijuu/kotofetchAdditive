@@ -23,21 +23,11 @@ makepkg -si
 ```
 
 ### Nix / NixOS
-If you use Nix, you can install `kotofetch` using this one-line command:
-```bash
-nix-build https://raw.githubusercontent.com/hxpe-dev/kotofetch/main/default.nix
-```
-
-You can also clone the whole repo and execute `default.nix`:
+If you use Nix, you can install `kotofetch` using those commands:
 ```bash
 git clone https://github.com/hxpe-dev/kotofetch.git
 cd kotofetch
 nix-build
-```
-
-You can also run using Nix's temporary environment:
-```bash
-nix run https://raw.githubusercontent.com/hxpe-dev/kotofetch/main/default.nix
 ```
 
 ### Prebuilt Binaries for Linux
