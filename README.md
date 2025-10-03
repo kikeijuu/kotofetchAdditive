@@ -116,7 +116,6 @@ romaji = "Hito wa kokoro de ikiru nda"
 source = "Your Name"
 ```
 - These custom quotes automatically merge with the built-in ones.
-> **Tip:** You can rename the built-in examples files (`anime.toml`, `proverb.toml`, `haiku.toml`) or create new ones, the program detects them automatically.
 
 ## Usage
 ```bash
