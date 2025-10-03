@@ -4,21 +4,11 @@ on:
   push:
     branches: [ main ]
   pull_request:
+    branches: [ main ]
 
 jobs:
-  build:
-    name: Build Binaries
-    strategy:
-      matrix:
-        include:
-          - os: ubuntu-latest
-            target: x86_64-unknown-linux-gnu
-          - os: windows-latest
-            target: x86_64-pc-windows-msvc
-          - os: macos-latest
-            target: x86_64-apple-darwin
-    runs-on: ${{ matrix.os }}
-
+  checks:
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout source
         uses: actions/checkout@v4
@@ -26,46 +16,8 @@ jobs:
       - name: Install Rust
         uses: dtolnay/rust-toolchain@stable
 
-      - name: Add target
-        run: rustup target add ${{ matrix.target }}
+      - name: Check formatting
+        run: cargo fmt -- --check
 
-      - name: Build release
-        run: cargo build --release --locked --target ${{ matrix.target }}
-
-      - name: Package binary (Linux/macOS)
-        if: runner.os != 'Windows'
-        shell: bash
-        run: |
-          BIN_NAME=kotofetch
-          VERSION=test-${GITHUB_SHA::7}
-          TARGET=${{ matrix.target }}
-          OUT_DIR=release/$TARGET
-          mkdir -p $OUT_DIR
-
-          if [[ "$RUNNER_OS" == "Linux" ]]; then
-            cp target/$TARGET/release/$BIN_NAME $OUT_DIR/
-            cd release && tar czf ${BIN_NAME}-${VERSION}-${TARGET}.tar.gz $TARGET && cd ..
-          elif [[ "$RUNNER_OS" == "macOS" ]]; then
-            cp target/$TARGET/release/$BIN_NAME $OUT_DIR/
-            cd release && tar czf ${BIN_NAME}-${VERSION}-${TARGET}.tar.gz $TARGET && cd ..
-          fi
-
-      - name: Package binary (Windows)
-        if: runner.os == 'Windows'
-        shell: pwsh
-        run: |
-          $BIN_NAME = "kotofetch"
-          $VERSION = "test-${env:GITHUB_SHA.Substring(0,7)}"
-          $TARGET = "${{ matrix.target }}"
-          $OUT_DIR = "release/$TARGET"
-          New-Item -ItemType Directory -Force -Path $OUT_DIR | Out-Null
-
-          Copy-Item "target/$TARGET/release/$BIN_NAME.exe" "$OUT_DIR/"
-
-          Compress-Archive -Path "release/$TARGET" -DestinationPath "release/${BIN_NAME}-${VERSION}-${TARGET}.zip"
-
-      - name: Upload artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: kotofetch-${{ matrix.target }}
-          path: release/*
+      - name: Run tests
+        run: cargo test --locked --all

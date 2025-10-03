@@ -7,14 +7,17 @@ on:
 
 jobs:
   build:
-    name: Build and Release Binaries
-    runs-on: ubuntu-latest
-
+    name: Build and Package Binaries
     strategy:
       matrix:
-        target: [
-          x86_64-unknown-linux-gnu,
-        ]
+        include:
+          - os: ubuntu-latest
+            target: x86_64-unknown-linux-gnu
+          - os: windows-latest
+            target: x86_64-pc-windows-msvc
+          - os: macos-latest
+            target: x86_64-apple-darwin
+    runs-on: ${{ matrix.os }}
 
     steps:
       - name: Checkout source
@@ -26,7 +29,9 @@ jobs:
       - name: Add target
         run: rustup target add ${{ matrix.target }}
 
+      # Linux only: install fpm for .deb and .rpm
       - name: Install fpm
+        if: runner.os == 'Linux'
         run: |
           sudo apt-get update
           sudo apt-get install -y ruby ruby-dev rubygems build-essential
@@ -35,7 +40,10 @@ jobs:
       - name: Build release
         run: cargo build --release --locked --target ${{ matrix.target }}
 
-      - name: Package binary
+      # Linux & macOS packaging
+      - name: Package binary (Linux/macOS)
+        if: runner.os != 'Windows'
+        shell: bash
         run: |
           BIN_NAME=kotofetch
           VERSION=${GITHUB_REF#refs/tags/}
@@ -43,20 +51,35 @@ jobs:
           OUT_DIR=release/$TARGET
           mkdir -p $OUT_DIR
 
-          # Copy binary for tar.gz
           cp target/$TARGET/release/$BIN_NAME $OUT_DIR/
 
-          # Create tar.gz
-          cd release && tar czf ${BIN_NAME}-${VERSION}-${TARGET}.tar.gz $TARGET
-          cd ..
+          if [[ "$RUNNER_OS" == "Linux" ]]; then
+            # tar.gz
+            cd release && tar czf ${BIN_NAME}-${VERSION}-${TARGET}.tar.gz $TARGET && cd ..
 
-          # Build .deb package with fpm
-          fpm -s dir -t deb -n $BIN_NAME -v $VERSION --prefix /usr/bin -C target/$TARGET/release $BIN_NAME
-          # Build .rpm package with fpm
-          fpm -s dir -t rpm -n $BIN_NAME -v $VERSION --prefix /usr/bin -C target/$TARGET/release $BIN_NAME
+            # deb & rpm
+            fpm -s dir -t deb -n $BIN_NAME -v $VERSION --prefix /usr/bin -C target/$TARGET/release $BIN_NAME
+            fpm -s dir -t rpm -n $BIN_NAME -v $VERSION --prefix /usr/bin -C target/$TARGET/release $BIN_NAME
 
-          # Move all packages into release folder
-          mv *.deb *.rpm release/
+            mv *.deb *.rpm release/
+          elif [[ "$RUNNER_OS" == "macOS" ]]; then
+            cd release && tar czf ${BIN_NAME}-${VERSION}-${TARGET}.tar.gz $TARGET && cd ..
+          fi
+
+      # Windows packaging
+      - name: Package binary (Windows)
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: |
+          $BIN_NAME = "kotofetch"
+          $VERSION = "${env:GITHUB_REF -replace '^refs/tags/',''}"
+          $TARGET = "${{ matrix.target }}"
+          $OUT_DIR = "release/$TARGET"
+          New-Item -ItemType Directory -Force -Path $OUT_DIR | Out-Null
+
+          Copy-Item "target/$TARGET/release/$BIN_NAME.exe" "$OUT_DIR/"
+
+          Compress-Archive -Path "release/$TARGET" -DestinationPath "release/${BIN_NAME}-${VERSION}-${TARGET}.zip"
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
@@ -79,81 +102,3 @@ jobs:
           files: artifacts/**/*
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-          name: Release
-
-# on:
-#   push:
-#     tags:
-#       - "v*"
-
-# jobs:
-#   build:
-#     name: Build and Release Binaries
-#     strategy:
-#       matrix:
-#         include:
-#           - os: ubuntu-latest
-#             target: x86_64-unknown-linux-gnu
-#           - os: windows-latest
-#             target: x86_64-pc-windows-msvc
-#           - os: macos-latest
-#             target: x86_64-apple-darwin
-#     runs-on: ${{ matrix.os }}
-
-#     steps:
-#       - name: Checkout source
-#         uses: actions/checkout@v4
-
-#       - name: Install Rust
-#         uses: dtolnay/rust-toolchain@stable
-
-#       - name: Add target
-#         run: rustup target add ${{ matrix.target }}
-
-#       - name: Build release
-#         run: cargo build --release --locked --target ${{ matrix.target }}
-
-#       - name: Package binary
-#         shell: bash
-#         run: |
-#           BIN_NAME=kotofetch
-#           VERSION=${GITHUB_REF#refs/tags/}
-#           TARGET=${{ matrix.target }}
-#           OUT_DIR=release/$TARGET
-#           mkdir -p $OUT_DIR
-
-#           if [[ "$RUNNER_OS" == "Linux" ]]; then
-#             cp target/$TARGET/release/$BIN_NAME $OUT_DIR/
-#             cd release && tar czf ${BIN_NAME}-${VERSION}-${TARGET}.tar.gz $TARGET && cd ..
-#           elif [[ "$RUNNER_OS" == "Windows" ]]; then
-#             cp target\\$TARGET\\release\\$BIN_NAME.exe $OUT_DIR\\
-#             cd release
-#             zip -r ${BIN_NAME}-${VERSION}-${TARGET}.zip $TARGET
-#             cd ..
-#           elif [[ "$RUNNER_OS" == "macOS" ]]; then
-#             cp target/$TARGET/release/$BIN_NAME $OUT_DIR/
-#             cd release && tar czf ${BIN_NAME}-${VERSION}-${TARGET}.tar.gz $TARGET && cd ..
-#           fi
-
-#       - name: Upload artifact
-#         uses: actions/upload-artifact@v4
-#         with:
-#           name: kotofetch-${{ matrix.target }}
-#           path: release/*
-
-#   release:
-#     needs: build
-#     runs-on: ubuntu-latest
-#     steps:
-#       - name: Download all artifacts
-#         uses: actions/download-artifact@v4
-#         with:
-#           path: artifacts
-
-#       - name: Publish Release
-#         uses: softprops/action-gh-release@v2
-#         with:
-#           files: artifacts/**/*
-#         env:
-#           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
