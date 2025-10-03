@@ -32,7 +32,8 @@ jobs:
       - name: Build release
         run: cargo build --release --locked --target ${{ matrix.target }}
 
-      - name: Package binary
+      - name: Package binary (Linux/macOS)
+        if: runner.os != 'Windows'
         shell: bash
         run: |
           BIN_NAME=kotofetch
@@ -44,15 +45,24 @@ jobs:
           if [[ "$RUNNER_OS" == "Linux" ]]; then
             cp target/$TARGET/release/$BIN_NAME $OUT_DIR/
             cd release && tar czf ${BIN_NAME}-${VERSION}-${TARGET}.tar.gz $TARGET && cd ..
-          elif [[ "$RUNNER_OS" == "Windows" ]]; then
-            cp target\\$TARGET\\release\\$BIN_NAME.exe $OUT_DIR\\
-            cd release
-            zip -r ${BIN_NAME}-${VERSION}-${TARGET}.zip $TARGET
-            cd ..
           elif [[ "$RUNNER_OS" == "macOS" ]]; then
             cp target/$TARGET/release/$BIN_NAME $OUT_DIR/
             cd release && tar czf ${BIN_NAME}-${VERSION}-${TARGET}.tar.gz $TARGET && cd ..
           fi
+
+      - name: Package binary (Windows)
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: |
+          $BIN_NAME = "kotofetch"
+          $VERSION = "test-${env:GITHUB_SHA.Substring(0,7)}"
+          $TARGET = "${{ matrix.target }}"
+          $OUT_DIR = "release/$TARGET"
+          New-Item -ItemType Directory -Force -Path $OUT_DIR | Out-Null
+
+          Copy-Item "target/$TARGET/release/$BIN_NAME.exe" "$OUT_DIR/"
+
+          Compress-Archive -Path "release/$TARGET" -DestinationPath "release/${BIN_NAME}-${VERSION}-${TARGET}.zip"
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
