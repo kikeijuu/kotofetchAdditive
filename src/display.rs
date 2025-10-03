@@ -1,13 +1,13 @@
 use crate::config::RuntimeConfig;
+use crate::quotes::BUILTIN_QUOTES;
 use crate::quotes::Quote;
 use crate::quotes::QuotesFile;
-use crate::quotes::BUILTIN_QUOTES;
 use console::{Color, Style};
 use rand::prelude::*;
+use std::fs;
 use term_size;
 use textwrap::wrap;
 use unicode_width::UnicodeWidthStr;
-use std::fs;
 
 fn simulate_font_size(s: &str, size: &str) -> String {
     match size {
@@ -120,7 +120,12 @@ fn align_in_box(line: &str, inner_width: usize, centered: bool) -> String {
 }
 
 // Create an empty line inside the box (used for spacing).
-fn blank_line(inner_width: usize, horizontal_padding: usize, border: bool, border_color: &Style) -> String {
+fn blank_line(
+    inner_width: usize,
+    horizontal_padding: usize,
+    border: bool,
+    border_color: &Style,
+) -> String {
     if border {
         format!(
             "{}{}{}{}{}",
@@ -143,7 +148,7 @@ fn print_block(
     border: bool,
     box_width: usize,
     centered: bool,
-    border_color: &Style, // <-- add this parameter
+    border_color: &Style,
 ) {
     for line in lines {
         for wline in wrap(line, inner_width) {
@@ -214,11 +219,6 @@ fn print_boxed(
     };
 
     let box_width = inner_width + horizontal_padding * 2 + if border { 2 } else { 0 };
-    // let jap_style = if bold {
-    //     Style::new().bold()
-    // } else {
-    //     Style::new()
-    // };
 
     let (top_left, top_right, bottom_left, bottom_right) = if rounded_border {
         ('╭', '╮', '╰', '╯')
@@ -235,7 +235,10 @@ fn print_boxed(
             horiz.repeat(inner_width + horizontal_padding * 2),
             top_right
         );
-        println!("{}", border_color.apply_to(pad_to_center(&line, box_width, centered)));
+        println!(
+            "{}",
+            border_color.apply_to(pad_to_center(&line, box_width, centered))
+        );
     }
 
     // Vertical padding (top)
@@ -259,7 +262,7 @@ fn print_boxed(
         border,
         box_width,
         centered,
-        &border_color
+        &border_color,
     );
 
     // Translation
@@ -281,7 +284,7 @@ fn print_boxed(
                 border,
                 box_width,
                 centered,
-                &border_color
+                &border_color,
             );
         }
     }
@@ -316,7 +319,7 @@ fn print_boxed(
                 border,
                 box_width,
                 centered,
-                &border_color
+                &border_color,
             );
         }
     }
@@ -341,7 +344,10 @@ fn print_boxed(
             horiz.repeat(inner_width + horizontal_padding * 2),
             bottom_right
         );
-        println!("{}", border_color.apply_to(pad_to_center(&line, box_width, centered)));
+        println!(
+            "{}",
+            border_color.apply_to(pad_to_center(&line, box_width, centered))
+        );
     }
 }
 
@@ -382,7 +388,8 @@ pub fn render(runtime: &RuntimeConfig, cli: &crate::cli::Cli) {
 
         // fallback to built-in
         let file_str = file_name.to_str().unwrap_or_default();
-        if let Some((_, content)) = BUILTIN_QUOTES.iter()
+        if let Some((_, content)) = BUILTIN_QUOTES
+            .iter()
             .find(|&&(name, _)| name == file_name.to_str().unwrap())
         {
             match toml::from_str::<QuotesFile>(content) {
@@ -390,7 +397,10 @@ pub fn render(runtime: &RuntimeConfig, cli: &crate::cli::Cli) {
                 Err(e) => eprintln!("Failed to parse built-in {}: {e}", file_str),
             }
         } else {
-            eprintln!("Warning: mode file not found in config or built-in: {}", file_str);
+            eprintln!(
+                "Warning: mode file not found in config or built-in: {}",
+                file_str
+            );
         }
     }
 

@@ -15,7 +15,7 @@ git push origin v0.2.1                          # Example version
 
 In the AUR repo folder
 ```bash
-nvim PKGBUILD # Once in here change the version to match the one in the github repo
+nvim PKGBUILD # Once in here change the version to match the one in the github repo and put pkgrel back to 1
 makepkg -g # Generate new sha256sums for all sources
 # Copy the sha256sums output into PKGBUILD (replace old ones)
 makepkg -C # Verify build + checksum validity

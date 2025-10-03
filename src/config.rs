@@ -110,10 +110,7 @@ pub fn load_user_config(path_override: Option<PathBuf>) -> Option<FileConfig> {
     }
 }
 
-pub fn make_runtime_config(
-    user: Option<FileConfig>,
-    cli: &crate::cli::Cli,
-) -> RuntimeConfig {
+pub fn make_runtime_config(user: Option<FileConfig>, cli: &crate::cli::Cli) -> RuntimeConfig {
     let mut r = RuntimeConfig::default();
 
     // apply user file config
@@ -204,7 +201,7 @@ pub fn make_runtime_config(
     }
     if let Some(bc) = &cli.border_color {
         r.border_color = bc.clone();
-}
+    }
     if let Some(b) = cli.source {
         r.source = b;
     }
