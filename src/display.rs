@@ -191,32 +191,30 @@ fn print_boxed(
     source_style: Style,
     centered: bool,
 ) {
-    // auto-width if none given
-    let inner_width = if width == 0 {
-        let mut max_width = 0;
-        for line in &text_lines {
-            for wline in wrap(line, usize::MAX) {
-                max_width = max_width.max(UnicodeWidthStr::width(wline.as_ref()));
-            }
+    // Compute max natural width of content
+    let mut max_width = 0;
+    for line in &text_lines {
+        max_width = max_width.max(UnicodeWidthStr::width(line.as_str()));
+    }
+    if show_translation {
+        if let Some(t) = translation {
+            max_width = max_width.max(UnicodeWidthStr::width(t));
         }
-        if show_translation {
-            if let Some(t) = translation {
-                for wline in wrap(t, usize::MAX) {
-                    max_width = max_width.max(UnicodeWidthStr::width(wline.as_ref()));
-                }
-            }
+    }
+    if show_source {
+        if let Some(s) = source {
+            max_width = max_width.max(UnicodeWidthStr::width(s));
         }
-        if show_source {
-            if let Some(s) = source {
-                for wline in wrap(s, usize::MAX) {
-                    max_width = max_width.max(UnicodeWidthStr::width(wline.as_ref()));
-                }
-            }
-        }
-        max_width
-    } else {
-        width
-    };
+    }
+
+    // Respect user specified width, width <= 0 means automatic
+    let mut inner_width = if width > 0 { width } else { max_width };
+
+    // Clamp inner width to terminal width minus borders/padding
+    if let Some((term_width, _)) = term_size::dimensions() {
+        let available = term_width.saturating_sub(horizontal_padding * 2 + if border { 2 } else { 0 });
+        inner_width = inner_width.min(available);
+    }
 
     let box_width = inner_width + horizontal_padding * 2 + if border { 2 } else { 0 };
 
