@@ -1,0 +1,61 @@
+name: CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+
+jobs:
+  build:
+    name: Build Binaries
+    strategy:
+      matrix:
+        include:
+          - os: ubuntu-latest
+            target: x86_64-unknown-linux-gnu
+          - os: windows-latest
+            target: x86_64-pc-windows-msvc
+          - os: macos-latest
+            target: x86_64-apple-darwin
+    runs-on: ${{ matrix.os }}
+
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@v4
+
+      - name: Install Rust
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Add target
+        run: rustup target add ${{ matrix.target }}
+
+      - name: Build release
+        run: cargo build --release --locked --target ${{ matrix.target }}
+
+      - name: Package binary
+        shell: bash
+        run: |
+          BIN_NAME=kotofetch
+          VERSION=test-${GITHUB_SHA::7}
+          TARGET=${{ matrix.target }}
+          OUT_DIR=release/$TARGET
+          mkdir -p $OUT_DIR
+
+          if [[ "$RUNNER_OS" == "Linux" ]]; then
+            cp target/$TARGET/release/$BIN_NAME $OUT_DIR/
+            cd release && tar czf ${BIN_NAME}-${VERSION}-${TARGET}.tar.gz $TARGET && cd ..
+          elif [[ "$RUNNER_OS" == "Windows" ]]; then
+            cp target\\$TARGET\\release\\$BIN_NAME.exe $OUT_DIR\\
+            cd release
+            zip -r ${BIN_NAME}-${VERSION}-${TARGET}.zip $TARGET
+            cd ..
+          elif [[ "$RUNNER_OS" == "macOS" ]]; then
+            cp target/$TARGET/release/$BIN_NAME $OUT_DIR/
+            cd release && tar czf ${BIN_NAME}-${VERSION}-${TARGET}.tar.gz $TARGET && cd ..
+          fi
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: kotofetch-${{ matrix.target }}
+          path: release/*
