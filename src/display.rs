@@ -212,7 +212,8 @@ fn print_boxed(
 
     // Clamp inner width to terminal width minus borders/padding
     if let Some((term_width, _)) = term_size::dimensions() {
-        let available = term_width.saturating_sub(horizontal_padding * 2 + if border { 2 } else { 0 });
+        let available =
+            term_width.saturating_sub(horizontal_padding * 2 + if border { 2 } else { 0 });
         inner_width = inner_width.min(available);
     }
 
