@@ -30,11 +30,16 @@ cd kotofetch
 nix-build
 ```
 
-### Prebuilt Binaries for Linux
-You can download prebuilt binaries from the [Releases](https://github.com/hxpe-dev/kotofetch/releases). Available formats:
-- **tar.gz** (generic Linux)
-- **.deb** (Debian / Ubuntu)
-- **.rpm** (Fedora / CentOS / openSUSE)
+### Prebuilt Binaries
+You can download prebuilt binaries for **Linux**, **Windows** and **macOS** from the [Releases page](https://github.com/hxpe-dev/kotofetch/releases).
+
+| System / Distribution | File Extension | Description |
+|:----------------------|:---------------|:------------|
+| **Generic Linux** | `.tar.gz`      | The most universal build. Extract and run the binary. |
+| **Debian / Ubuntu** | `.deb`         | Install using `dpkg`. |
+| **Fedora / CentOS / openSUSE** | `.rpm`  | For all RPM-based systems. |
+| **Windows** | `.exe` or `.zip` | The standalone **`.exe`** is ready to run. The **`.zip`** contains the executable. |
+| **macOS** | `.tar.gz`      | Extract and run the binary. |
 
 ### From Source
 Requires **Rust** and **Cargo**:
@@ -51,10 +56,11 @@ After installation, you can run `kotofetch` from anywhere in your terminal.
 
 ### Config File
 
-User configuration lives in:
-
-```
-~/.config/kotofetch/config.toml
+User configuration lives in:  
+```bash
+~/.config/kotofetch/config.toml                       # On Linux
+~/Library/Application Support/kotofetch/config.toml   # On macOS
+%APPDATA%\kotofetch\config.toml                       # On Windows
 ```
 
 Here you can customize:
@@ -95,8 +101,10 @@ centered = true
 
 ### Custom quotes
 Built-in quotes are embedded in the binary. To add your own quotes, create:
-```
-~/.config/kotofetch/quotes/
+```bash
+~/.config/kotofetch/quotes/                       # On Linux
+~/Library/Application Support/kotofetch/quotes/   # On macOS
+%APPDATA%\kotofetch\quotes\                       # On Windows
 ```
 - Place any `.toml` file there.
 - The filenames can be arbitrary, the program automatically reads all `.toml` files in this folder.
