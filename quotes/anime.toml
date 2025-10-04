@@ -132,6 +132,12 @@ source = "Berserk"
 
 [[quote]]
 japanese = "絶対大丈夫だよ"
-romaji = "Zettai daijōbu da yo"
 translation = "It’ll absolutely be okay."
+romaji = "Zettai daijōbu da yo"
 source = "Cardcaptor Sakura (Kinomoto Sakura)"
+
+[[quote]]
+japanese = "君はヒーローになれる"
+translation = "You can become a hero."
+romaji = "Kimi wa hīrō ni nareru"
+source = "My Hero Academia (All Might)"
