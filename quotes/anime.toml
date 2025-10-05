@@ -241,3 +241,9 @@ japanese = "逃げたら一つ、進めば二つ"
 translation = "Run and gain one, move forward and gain two."
 romaji = "Nigetara hitotsu, susumeba futatsu"
 source = "Mobile Suit Gundam: The Witch from Mercury"
+
+[[quote]]
+japanese = "今日も一日がんばるぞい！"
+translation = "I'll do my best today!"
+romaji = "Kyō mo ichinichi ganbaru zoi!"
+source = "New Game! (Suzukaze Aoba), anime ep. 4 / manga vol. 1"
