@@ -52,6 +52,7 @@ translation = "People believe what they want to believe."
 romaji = "Hito wa shinjitai mono o shinjiru"
 source = "Death Note"
 
+# 10
 [[quote]]
 japanese = "夢を諦めるな"
 translation = "Never give up on your dreams."
@@ -112,6 +113,7 @@ translation = "If you don't do it now, you'll never do it in your life!!"
 romaji = " ima yannei yatsu wa！ isshō yaryashinei n da !！"
 source = "Berserk"
 
+# 20
 [[quote]]
 japanese = "自分の手に負えないならケンカなんて仕掛けるんじゃないよ"
 translation = "Don't start a fight if it's beyond your control."
