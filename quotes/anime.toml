@@ -143,3 +143,34 @@ japanese = "君はヒーローになれる"
 translation = "You can become a hero."
 romaji = "Kimi wa hīrō ni nareru"
 source = "My Hero Academia (All Might)"
+
+[[quote]]
+japanese = "夢は大きく、欲は小さく。そういう気持ちで生きるようにしろ。"
+translation = "Dream big, want little. Live with that kind of attitude."
+romaji = "Yume wa ōkiku, yoku wa chiisaku. Sō iu kimochi de ikiru yō ni shiro"
+source = "Chibi Maruko-chan"
+
+[[quote]]
+japanese = "命にかかわること以外どーでもいいことばっかり..."
+translation = "Everything except life-threatening matters is no big deal..."
+romaji = "Inochi ni kakawaru koto igai dō demo ii koto bakkari..."
+source = "Chibi Maruko-chan"
+
+[[quote]]
+japanese = "怖い…自分の心に踏み込むのが怖い"
+translation = "Scary... It's scary to step into my own heart."
+romaji = "Kowai... jibun no kokoro ni fumikomu no ga kowai"
+source = "Erased"
+
+[[quote]]
+japanese = "善行も悪行も本質は同じ、人が自らの欠陥を補う為の行いに過ぎない"
+translation = "Good deeds and bad deeds are essentially the same, they're just actions people take to compensate for their own flaws."
+romaji = "Zenkō mo akkō mo honshitsu wa onaji, hito ga mizukara no ketsujō o oginau tame no okonai ni suginai"
+source = "Erased"
+
+# 30
+[[quote]]
+japanese = "このヒトデナシ！"
+translation = "You bastards!"
+romaji = "Kono hitodenashi!"
+source = "South Park"
