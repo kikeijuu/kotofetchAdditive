@@ -174,3 +174,70 @@ japanese = "このヒトデナシ！"
 translation = "You bastards!"
 romaji = "Kono hitodenashi!"
 source = "South Park"
+
+[[quote]]
+japanese = "認めたくないものだな。自分自身の若さ故の過ちというものを"
+translation = "None want to admit them. The mistakes we make in our youth."
+romaji = "Mitometakunai mono da na. Jibun jishin no wakasa yue no ayamachi to iu mono o"
+source = "Mobile Suit Gundam" 
+
+[[quote]]
+japanese = "こいつ…うごくぞ！"
+translation = "This thing... it moves!"
+romaji = "Koitsu... ugoku zo!"
+source = "Mobile Suit Gundam"
+
+[[quote]]
+japanese = "当たらなければどうという事はない！"
+translation = "If it doesn't hit, it doesn't matter!"
+romaji = "Ataranakereba dō to iu koto wa nai!"
+source = "Mobile Suit Gundam"
+
+[[quote]]
+japanese = "二度もぶった。親父にもぶたれた事ないのに！"
+translation = "You hit me twice! Even my father never hit me!"
+romaji = "Nidō mo butta. Oyaji ni mo butareta koto nai no ni!"
+source = "Mobile Suit Gundam"
+
+[[quote]]
+japanese = "ザクとは違うのだよ、ザクとは！"
+translation = "This is no Zaku, boy! No Zaku!"
+romaji = "Zaku to wa chigau no da yo, Zaku to wa!"
+source = "Mobile Suit Gundam"
+
+[[quote]]
+japanese = "坊やだからさ"
+translation = "Because [he was] a brat."
+romaji = "Bōya da kara sa"
+source = "Mobile Suit Gundam"
+
+[[quote]]
+japanese = "悲しいけどこれ戦争なのよね"
+translation = "It's sad, but this is war."
+romaji = "Kanashii kedo kore sensō nanoyone"
+source = "Mobile Suit Gundam" 
+
+[[quote]]
+japanese = "ごめんよ、僕にはまだ帰れる所があるんだ"
+translation = "I'm sorry, but I still have a home to return to."
+romaji = "Gomen yo, boku ni wa mada kaereru tokoro ga arun da"
+source = "Mobile Suit Gundam" 
+
+# 40
+[[quote]]
+japanese = "あんなの飾りです、偉い人にはそれがわからんのですよ"
+translation = "[Legs] are just for show. The higher-ups just don't get it."
+romaji = "Anna no kazari desu, erai hito ni wa sore ga wakaran no desu yo"
+source = "Mobile Suit Gundam"
+
+[[quote]]
+japanese = "俺がガンダムだ！"
+translation = "I am Gundam!"
+romaji = "Ore ga Gandamu da!"
+source = "Mobile Suit Gundam 00"
+
+[[quote]]
+japanese = "逃げたら一つ、進めば二つ"
+translation = "Run and gain one, move forward and gain two."
+romaji = "Nigetara hitotsu, susumeba futatsu"
+source = "Mobile Suit Gundam: The Witch from Mercury"
