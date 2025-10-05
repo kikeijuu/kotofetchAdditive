@@ -76,3 +76,33 @@ japanese = "春の山\n霞たなびく\n花の声"
 translation = "Spring mountains—\nMist floats by,\nVoices of flowers."
 romaji = "Haru no yama\nKasumi tanabiku\nHana no koe"
 source = "Matsuo Bashō"
+
+[[quote]]
+japanese = "松島や\nああ松島や\n松島かな"
+translation = "Matsushima! Ah, Matsushima! Matsushima?"
+romaji = "Matsushima ya\nAa Matsushima ya\nMatsushima kana"
+source = "Tawara Bo"
+
+[[quote]]
+japanese = "荒海や\n佐渡に横たふ\n天の川"
+translation = "Rough sea—\nStretching across to Sado,\nThe Milky Way."
+romaji = "Araumi ya\nSado ni yokotau\nAmanogawa"
+source = "Matsuo Bashō"
+
+[[quote]]
+japanese = "菜の花や\n月は東に\n日は西に"
+translation = "Rapeseed blossoms—\nThe moon in the east,\nThe sun in the west."
+romaji = "Nanohana ya\nTsuki wa higashi ni\nHi wa nishi ni"
+source = "Yosa Buson"
+
+[[quote]]
+japanese = "五月雨を\nあつめて早し\n最上川"
+translation = "Gathering the rains—\nSwift is the flow\nOf the Mogami River."
+romaji = "Samidare o\nAtsumete hayashi\nMogamigawa"
+source = "Matsuo Bashō"
+
+[[quote]]
+japanese = "おもしろき\nこともなき世を\nおもしろく"
+translation = "A world of nothing—\nYet I make it\nFull of wonder."
+romaji = "Omosoroki\nKoto mo naki yo o\nOmosoroku"
+source = "Takarai Kikaku"
